@@ -1,6 +1,6 @@
 # User journeys — Kenya pretriage PWA
 
-Canonical journeys for humans and agents. Feature work **must** satisfy the journeys tagged on the matching issue in [team-issues.md](team-issues.md). This is **not** a diagnosis product; UI copy always says pretriage routing.
+Canonical journeys for humans and agents. Feature work **must** satisfy the journeys tagged on the matching issue in [team-issues.md](team-issues.md). Parallel people/subagents: [merge-clash-avoidance.md](merge-clash-avoidance.md). This is **not** a diagnosis product; UI copy always says pretriage routing.
 
 Related: [kenya-pretriage.md](kenya-pretriage.md), [product-spec.md](product-spec.md).
 
