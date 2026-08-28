@@ -2,6 +2,15 @@
 
 Source of truth if GitHub issues cannot be created. After push, prefer `gh issue create` from these bodies. Labels: `person-p1` … `person-t`, `wave-1` / `wave-2`.
 
+| Role | Assignee |
+|------|----------|
+| P1 — Platform steward | Ethan |
+| P2 — Facilities, KMHFR, symptoms | Moses |
+| P3 — Care-seeker PWA | Andrew |
+| P4 — Hospital desk PWA | Joseph |
+| P5 — Notes, SMS, voice | Brian |
+| T — Tester | Kalungu |
+
 **Clash rules (required):** [merge-clash-avoidance.md](merge-clash-avoidance.md) — hub owners, handshake, wait_count/voice/tests, wave gate. Attach it in every agent session.
 
 Also attach [user-journeys.md](user-journeys.md), [kenya-pretriage.md](kenya-pretriage.md), [product-spec.md](product-spec.md), [product-schema.md](product-schema.md), [docs/api/](../docs/api/). Epic journeys J1–J9.
@@ -10,7 +19,7 @@ Also attach [user-journeys.md](user-journeys.md), [kenya-pretriage.md](kenya-pre
 
 ---
 
-## P1 — Platform steward (hubs)
+## P1 — Platform steward (hubs) — Ethan
 
 **Title:** `[P1] Hub steward: routers, config, deps, Alembic, Render`
 
@@ -39,7 +48,7 @@ Does not touch feature folders. Merge into main.
 
 ---
 
-## P2 — Facilities, KMHFR, symptom catalog, later bookings
+## P2 — Facilities, KMHFR, symptom catalog, later bookings — Moses
 
 **Title:** `[P2] KMHFR ingest, ranking, Kenya symptom catalog + pgvector; Wave 2 bookings`
 
@@ -71,7 +80,7 @@ Read datasource-scorecard and symptom-ontology-scorecard before ingest.
 
 ---
 
-## P3 — Care-seeker PWA
+## P3 — Care-seeker PWA — Andrew
 
 **Title:** `[P3] Patient PWA: voice-consent landing, speak/text symptoms, book`
 
@@ -101,7 +110,7 @@ P4/P5 will import your auth client — do not fork it.
 
 ---
 
-## P4 — Hospital desk PWA
+## P4 — Hospital desk PWA — Joseph
 
 **Title:** `[P4] Hospital PWA: wait count, mark met / no-show`
 
@@ -131,7 +140,7 @@ Do not edit hubs, patient/**, notes/**, or backend/tests.
 
 ---
 
-## P5 — Notes, SMS, ElevenLabs + Pawa voice
+## P5 — Notes, SMS, ElevenLabs + Pawa voice — Brian
 
 **Title:** `[P5] Notes + SMS + ElevenLabs calls with Pawa AI fallback`
 
@@ -161,7 +170,7 @@ P3 will call POST /voice/stt and /tts — you own those handlers.
 
 ---
 
-## T — Tester
+## T — Tester — Kalungu
 
 **Title:** `[T] Test plan, fixtures, pytest smoke + Playwright J1–J9`
 
