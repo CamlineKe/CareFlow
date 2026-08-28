@@ -53,6 +53,7 @@ Optional skills.sh guide: `docs/portable-skills.md` (installed when the `portabl
 
 | Surface | Use |
 |---------|-----|
+| **Firebase Auth** | Project `careflow-kenya`. Local Admin SDK + localhost walkthrough: [ONBOARDING.md](ONBOARDING.md#firebase-localhost). Agents must prompt via Phantom on first run / `GET /me` failures (`.cursor/rules/firebase-localhost.mdc`) — never collect keys in chat. |
 | **Render** Cursor plugin MCP | Deploys, logs, Postgres, env vars. Install with `/add-plugin render` (user scope). Do **not** add a second `render` entry in `mcp.json`. |
 | **ElevenLabs** hosted MCP + skills | Voice agents, TTS, STT (`text-to-speech`, `speech-to-text`, `agents`, `setup-api-key`). Hosted MCP is `https://api.elevenlabs.io/v1/mcp` (OAuth). Product runtime still cascades **ElevenLabs then Pawa** per [plans/kenya-pretriage.md](plans/kenya-pretriage.md). |
 

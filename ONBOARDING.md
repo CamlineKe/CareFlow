@@ -17,16 +17,17 @@ Locked stack: Next.js 15 PWA + FastAPI (Python 3.12) + PostgreSQL 16 + pgvector 
 ```bash
 cp .env.example .env
 phantom init
-# phantom add FIREBASE_*   # needed for Auth user seed + ID tokens (see Local demo accounts)
+# Firebase Admin SDK — see Firebase (localhost) below. Without it, /health
+# still works; GET /me and demo Auth user seed do not.
 
-docker compose up --build -d
+phantom exec -- docker compose up --build -d
 # wait until db and api are healthy — api migrates then seeds on boot
 curl localhost:8000/health   # {"status":"ok"}
 
 cd frontend && npm install && npm run dev   # :3000
 ```
 
-`docker compose up --build -d` is enough for migrate + seed. Do **not** run a separate `alembic upgrade head` on this first-time compose path. **Host pytest against `db` only** still needs Alembic on the host — see [docs/testing-reference.md](docs/testing-reference.md) (CI starts `db` only, then host Alembic + pytest).
+`phantom exec -- docker compose up --build -d` is enough for migrate + seed **and** injects `FIREBASE_*` into `api`. Plain `docker compose up` is fine for `/health` only. Do **not** run a separate `alembic upgrade head` on this first-time compose path. **Host pytest against `db` only** still needs Alembic on the host — see [docs/testing-reference.md](docs/testing-reference.md) (CI starts `db` only, then host Alembic + pytest).
 
 After Compose is healthy, read [ARCHITECTURE.md](ARCHITECTURE.md) for target topology versus what is running now.
 
@@ -34,7 +35,46 @@ PWA: `/` role picker (no mic), `/patient` care-seeker + 999, `/hospital` desk th
 
 `DEMO_NOTIFY=1` never live-dials. CORS allowlist is `FRONTEND_ORIGIN`. Env names: [`.env.example`](.env.example).
 
-## Local demo accounts
+## Firebase (localhost)
+
+Firebase is **auth only**. Product data stays in PostgreSQL ([D-001](research/decision-log.md)). The Google project **`careflow-kenya`** is already created (display name CareFlow). Do **not** create a second Firebase project unless the user cannot access this one and explicitly asks.
+
+| Piece | Status | Where |
+|-------|--------|--------|
+| Firebase project + web app | Provisioned | [Console](https://console.firebase.google.com/project/careflow-kenya/overview) |
+| Auth providers | Email/password + Google Sign-In | [Providers](https://console.firebase.google.com/project/careflow-kenya/authentication/providers) · `firebase.json` |
+| PWA client SDK | Committed (public web keys) | `frontend/lib/firebase.ts`, `frontend/lib/firebase-config.ts` |
+| Admin SDK (`FIREBASE_*`) | **You add this** via Phantom | FastAPI `GET /me`, boot seed of demo Auth users |
+
+The web `apiKey` in `firebase-config.ts` is **not** a secret and is **not** `FIREBASE_PRIVATE_KEY`. Never put the Admin private key in the browser, git, or chat.
+
+### Walkthrough — first clone or first run
+
+Agents: follow this on onboarding, `docker compose` / `npm run dev`, or any Firebase / `GET /me` failure. **Never ask the user to paste keys, JSON, or tokens into chat.** Use Phantom (`phantom add` or MCP `phantom_add_secret_interactive`).
+
+1. **Confirm the project.** Console: [careflow-kenya](https://console.firebase.google.com/project/careflow-kenya/overview). If the user is not on this Google account, use the Firebase MCP `firebase_login` flow (show them the login URL **and** session ID). If they lack access, they need an invite — do not create `careflow-*` unless they ask.
+2. **Generate an Admin SDK key** (human in the browser): [Service accounts](https://console.firebase.google.com/project/careflow-kenya/settings/serviceaccounts/adminsdk) → **Generate new private key**. A JSON file downloads. It contains `project_id`, `client_email`, and `private_key`. Do not commit that file; delete it after Phantom has the values.
+3. **Store the three Admin vars in Phantom** (from the repo root, after `phantom init`):
+
+   ```bash
+   phantom add FIREBASE_PROJECT_ID      # careflow-kenya
+   phantom add FIREBASE_CLIENT_EMAIL    # client_email from the JSON
+   phantom add FIREBASE_PRIVATE_KEY     # private_key including -----BEGIN/END----- and newlines
+   ```
+
+   Or ask the agent to run `phantom_add_secret_interactive` for each name. Values stay in the OS keychain; `.env` should hold `phm_…` tokens only.
+4. **Restart the API so Compose interpolates the secrets:**
+
+   ```bash
+   phantom exec -- docker compose up --build -d
+   curl localhost:8000/health   # {"status":"ok"}
+   ```
+
+   `api` reads `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY` from the host ([docker-compose.yml](docker-compose.yml)). Without `phantom exec`, those env vars are empty: boot seed skips Auth upsert and `GET /me` returns **401**.
+5. **PWA on localhost:3000** — no extra Firebase env. From `frontend/`: `npm install && npm run dev`. Client init is `frontend/lib/firebase.ts`. There is no sign-in form on `/` this pass.
+6. **Re-seed** (optional): `docker compose exec api python -m app.seed`. With Admin credentials, this upserts the demo Firebase Auth users below.
+
+### Local demo accounts
 
 **Local/demo only. Never use these credentials on a production Firebase project.**
 
@@ -43,9 +83,18 @@ PWA: `/` role picker (no mic), `/patient` care-seeker + 999, `/hospital` desk th
 | `patient@careflow.local` | `CareflowDemo1!` | care-seeker (`patient`) | — | `demo-patient` |
 | `staff@careflow.local` | `CareflowDemo1!` | hospital staff | Kenyatta National Hospital (`SEED-NBO-KNH`) | `demo-staff` |
 
-PWA sign-in still needs `phantom add FIREBASE_*` so the boot seed can create Auth users and the client can obtain ID tokens. Pass those into Compose with `phantom exec -- docker compose up --build -d` (the `api` service interpolates `FIREBASE_*` from the host). These credentials are for operators, curl / `GET /me`, and a later Firebase client — not a login form this pass.
+These are for operators, curl / `GET /me`, and a later PWA login UI — not a form on `/` this pass. `GET /me` needs `Authorization: Bearer <Firebase ID token>` ([docs/api/me.md](docs/api/me.md)).
 
-To re-seed without recreating the stack: `docker compose exec api python -m app.seed`.
+### When it fails
+
+| Symptom | Likely cause | What to do |
+|---------|--------------|------------|
+| `GET /me` → 401 `unauthorized` | Missing/invalid Bearer, or Admin SDK not configured | Walkthrough steps 2–4. Confirm Compose was started with `phantom exec`. |
+| API log: `Firebase Admin credentials are not configured; skipping demo Auth upsert` | `FIREBASE_*` empty in the `api` container | Same — Phantom add + `phantom exec -- docker compose up --build -d`. |
+| `user_not_provisioned` (404) | Token is valid but UID is not `demo-patient` / `demo-staff` (and not otherwise seeded) | Expected for unknown Google accounts. Seed or use a demo email. |
+| Google popup closes: `auth/unauthorized-domain` | Host not in Auth authorized domains | `localhost` is default. Custom hosts: [Auth settings](https://console.firebase.google.com/project/careflow-kenya/authentication/settings). |
+
+Agents: if Phantom MCP is connected, call `phantom_list_secrets` (names only) before prompting. If `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, or `FIREBASE_PRIVATE_KEY` are missing, start this walkthrough immediately — do not treat `/health` as “Firebase is working.”
 
 ## Verify
 
@@ -74,7 +123,7 @@ Add a row when you create a new top-level directory. Keep command details in lin
 
 ## Cursor plugins and MCP
 
-Agent tooling for deploy and voice. No API keys in `mcp.json`. Both MCPs can create, change, or delete cloud resources — only grant access you are comfortable with.
+Agent tooling for deploy, Firebase, and voice. No API keys in `mcp.json`. These MCPs can create, change, or delete cloud resources — only grant access you are comfortable with.
 
 **Render (plugin, user scope — all projects):**
 
@@ -83,6 +132,8 @@ Agent tooling for deploy and voice. No API keys in `mcp.json`. Both MCPs can cre
 3. Verify: ask the agent to run `list_workspaces`.
 
 Do **not** add a `render` entry to `.cursor/mcp.json` or `~/.cursor/mcp.json` — the plugin already provides the hosted MCP (`https://mcp.render.com/mcp`). If the plugin UI fails, add that URL in Customize → MCP with OAuth client id `cursor` instead.
+
+**Firebase (Cursor plugin MCP):** Auth project `careflow-kenya`. The Firebase plugin provides MCP (`firebase_login`, project/app tools). Do **not** add a second `firebase` block to `.cursor/mcp.json`. Local Admin SDK walkthrough: [Firebase (localhost)](#firebase-localhost).
 
 **ElevenLabs (hosted MCP, OAuth):**
 
@@ -121,7 +172,7 @@ phantom add VAR_NAME
 | `FRONTEND_ORIGIN` | CORS allowlist for the PWA (default `http://localhost:3000`). |
 | `NEXT_PUBLIC_API_URL` | PWA API base (default `http://localhost:8000`). |
 | `DEMO_NOTIFY` | `1` = never live-dial or SMS-blast. Keep `1` unless you intend vendor traffic. |
-| `FIREBASE_*` | Admin SDK for `GET /me` and boot seed (Phantom). Demo UIDs `demo-patient` / `demo-staff` (emails in [Local demo accounts](#local-demo-accounts)). |
+| `FIREBASE_*` | Admin SDK for `GET /me` and boot seed (Phantom). Walkthrough: [Firebase (localhost)](#firebase-localhost). Demo UIDs in [Local demo accounts](#local-demo-accounts). |
 | `ELEVENLABS_API_KEY` | App runtime for later TTS/STT/calls. **Not** required for hosted ElevenLabs MCP OAuth. |
 
 **`.env` file:** Contains phantom tokens (`phm_...`), not real secrets. Safe to commit if tracked; real values are injected by `phantom exec` at runtime.
