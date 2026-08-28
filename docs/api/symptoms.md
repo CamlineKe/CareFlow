@@ -27,6 +27,7 @@ Journey **J1** (routine) and **J8** (spoken text after STT): map an utterance on
 | Route | Chapter |
 |-------|---------|
 | `GET /facilities/recommend` | [facilities.md](facilities.md) |
+| `POST /bookings` | [bookings.md](bookings.md) (unmounted until P1) |
 | `GET /health` | [health.md](health.md) |
 
 See [conventions.md](conventions.md).

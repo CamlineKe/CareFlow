@@ -163,6 +163,38 @@
           }
         }
       ]
+    },
+    {
+      "name": "bookings",
+      "item": [
+        {
+          "name": "Create booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebaseIdToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"facility_id\":1,\"symptom_ids\":[\"chest-pain\"]}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings"]
+            },
+            "description": "operationId: `createBooking`. Patient only. Increments wait_count. 404 until P1 include_router."
+          }
+        }
+      ]
     }
   ],
   "variable": [

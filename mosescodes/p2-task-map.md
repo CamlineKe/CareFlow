@@ -177,9 +177,9 @@ Tester (Kalungu) owns scorecard expansion. P2 should not invent a second SoT. Pr
 | Red-flag recommend | **Implemented** (`red_flag` query, seed only) | Same + KMHFR rows later |
 | Symptom catalog | 52-row JSON + validators + empty-table seed | Embeddings + map API |
 | `POST /symptoms/map` | Handler in package; not mounted | P1 include_router |
-| Rules → KEPH | Missing | Catalog rules; vectors do not pick level |
+| Rules → KEPH | `symptoms/rules.py` used by map and book | Optional extract to `triage/` |
 | KMHFR sync | Missing | Cache + seed fallback; Esri not SoT |
-| `POST /bookings` | Missing | Wave 2; increment wait in one txn |
+| `POST /bookings` | Handler in package; not mounted | P1 include_router |
 | Embedding dep + Settings | Missing | Handshake P1 |
 
 ## 11. Draft phase sketch (not approved)
@@ -214,4 +214,4 @@ Wave 1 parallel split from the issue: `facilities/` (D, E) vs `symptoms/` (B, C)
 
 ## 14. Next
 
-Phases 1–3 are on `origin/dev`. Send [handshake-p1.md](handshake-p1.md) to Ethan. Do not edit `main.py`.
+Phase 4 bookings are on `origin/dev`. Next session: [START-HERE.md](START-HERE.md).

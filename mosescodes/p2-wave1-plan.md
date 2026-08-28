@@ -4,16 +4,16 @@
 |-------|-------|
 | Document type | Implementation plan |
 | Version | 0.1 |
-| Status | Phase 1 and 2 committed |
+| Status | Phases 1–4 on origin/dev |
 | Owner | Moses (P2) |
 | Last updated | 2026-08-29 |
-| Related documents | [p2-decisions.md](p2-decisions.md), [p2-task-map.md](p2-task-map.md), [p2-progress.md](p2-progress.md), [merge-clash-avoidance.md](../plans/merge-clash-avoidance.md) |
+| Related documents | [p2-decisions.md](p2-decisions.md), [p2-task-map.md](p2-task-map.md), [p2-progress.md](p2-progress.md), [START-HERE.md](START-HERE.md), [merge-clash-avoidance.md](../plans/merge-clash-avoidance.md) |
 | Prerequisites | Decisions D-P2-01 … D-P2-07 |
-| Revision summary | Phase 2 catalog JSON and loaders |
+| Revision summary | Added Phase 4 instant bookings (unmounted) |
 
 ## Goals and constraints
 
-- Stay inside `backend/app/facilities/` and `backend/app/symptoms/` plus our API chapters.
+- Stay inside `backend/app/facilities/`, `symptoms/`, `bookings/` plus our API chapters.
 - Do not edit hubs (`main.py`, `core/**`, `pyproject.toml`, Alembic, `docs/api/README.md`, `docs/api/conventions.md`).
 - Do not edit `backend/tests/` or `frontend/`.
 - Handshake P1 in writing before any hub change.
@@ -25,9 +25,10 @@
 |-------|-----------|-------|------------|---------------|
 | **1. Red-flag ranking** | J2 on existing recommend | `facilities/`, `docs/api/facilities.md`, pagination row, OpenAPI export, Postman query key, `facilities/tests/` | None | None |
 | **2. Symptom catalog JSON** | Starter catalog on disk | `backend/data/` + `symptoms/` loaders (no live route yet) | Phase 1 done | None yet |
-| **3. Map API** | `POST /symptoms/map` package + chapter | `symptoms/` | Phase 2 | P1: `include_router`, README route-map row |
-| **4. Real embeddings seed** | e5-small at seed time | seed job | Phase 3 | P1: pyproject extra, optional Settings |
-| **5. KMHFR ingest** | Live sync | `facilities/` sync | Scorecards | P1: Settings / env name if token |
+| **3. Map API** | `POST /symptoms/map` package + chapter | `symptoms/` | Phase 2 | P1: `include_router` |
+| **4. Instant bookings** | `POST /bookings` wait +1 | `bookings/` | Phase 2 catalog (map optional) | P1: `include_router` |
+| **5. Real embeddings** | e5-small at seed time | seed job | Phase 3 | P1: pyproject extra |
+| **6. KMHFR ingest** | Live sync | `facilities/` sync | Scorecards | P1: Settings / env name if token |
 
 Phase 1 acceptance: `red_flag=false` keeps J7 wait-then-distance; `red_flag=true` drops KEPH &lt; 4 and sorts by distance only; Kangemi (Level 3) never appears on red-flag.
 
@@ -81,3 +82,16 @@ Local-lang phrases (ki/luo/kln/kam) are starter seeds `[needs validation]` with 
 | `mosescodes/handshake-p1.md` | P1 include_router | Do not edit `main.py` |
 
 **Does not change:** `main.py`, `pyproject.toml`, `docs/api/README.md`.
+
+## Phase 4 detail
+
+**Outcome:** Instant `POST /bookings` increments `wait_count` in one transaction. Not mounted until P1. No decrement.
+
+| File | Why | Change |
+|------|-----|--------|
+| `backend/app/bookings/create.py` | Lock, insert, snapshot, +1 | Schema contract |
+| `backend/app/bookings/router.py` | Patient-only HTTP | Import `get_current_user`; do not edit deps |
+| `docs/api/bookings.md` | Domain chapter | Full chapter |
+| `handshake-p1.md` | Second include_router | Same P1 note as map |
+
+**Does not change:** hospital arrived/no-show, notify, `main.py`.

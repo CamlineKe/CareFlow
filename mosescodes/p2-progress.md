@@ -9,15 +9,16 @@
 | Last updated | 2026-08-29 |
 | Related documents | [p2-wave1-plan.md](p2-wave1-plan.md), [p2-decisions.md](p2-decisions.md) |
 | Prerequisites | [p2-wave1-plan.md](p2-wave1-plan.md) |
-| Revision summary | Phases 1–2 ready to push |
+| Revision summary | Phase 4 bookings unmounted; START-HERE for next chat |
 
 Newest first.
 
 | Date | Phase | Status | Notes |
 |------|-------|--------|-------|
-| 2026-08-29 | 3. Map API | **Committed** | `POST /symptoms/map` package + [handshake-p1.md](handshake-p1.md). Hash vectors (`careflow-hash-v1`). Not on `main.py` until P1. |
-| 2026-08-29 | 2. Symptom catalog JSON | **Pushed** `c793cdd` on `origin/dev` | 52-row catalog. `upstream` push denied (no write). |
-| 2026-08-29 | 1. Red-flag ranking | **Pushed** `9f47017` on `origin/dev` | `red_flag` on recommend. |
+| 2026-08-29 | 4. Instant bookings | **On origin/dev** | `POST /bookings` wait +1. Patient auth. Not on `main.py`. Decrement is still P4. |
+| 2026-08-29 | 3. Map API | **On origin/dev** `ffdf6e3` | Hash map. Handshake still open. |
+| 2026-08-29 | 2. Symptom catalog | **On origin/dev** `c793cdd` | 52-row JSON. |
+| 2026-08-29 | 1. Red-flag ranking | **On origin/dev** `9f47017` | `red_flag` query. |
 
 ## Phase 1 files (landed)
 
@@ -25,8 +26,6 @@ Newest first.
 - `docs/api/facilities.md`, pagination, Postman, `backend/openapi/openapi.yaml`
 - `mosescodes/` map, decisions, wave plan
 
-## After this push
+## After this slice
 
-`origin/dev` is at CamlineKe. Open a PR into `exabyteso/CareFlow` `dev` if that is the team merge path: https://github.com/CamlineKe/CareFlow/pull/new/dev
-
-Send Ethan [handshake-p1.md](handshake-p1.md) so `POST /symptoms/map` is mounted.
+Next chat: [START-HERE.md](START-HERE.md). Send Ethan an updated [handshake-p1.md](handshake-p1.md) (map **and** bookings). Do not merge `upstream/dev` until it actually moves.
