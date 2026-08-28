@@ -41,6 +41,8 @@ def test_ensure_symptom_catalog_inserts_once():
             text("SELECT COUNT(*) FROM symptom_synonyms")
         ).scalar_one()
         assert synonym_count == 0
+    finally:
+        session.close()
 
 
 def test_ensure_synonym_embeddings_inserts_once():
@@ -57,7 +59,5 @@ def test_ensure_synonym_embeddings_inserts_once():
         expected = sum(len(row.synonyms) for row in load_catalog())
         count = session.execute(text("SELECT COUNT(*) FROM symptom_synonyms")).scalar_one()
         assert count == expected
-    finally:
-        session.close()
     finally:
         session.close()
