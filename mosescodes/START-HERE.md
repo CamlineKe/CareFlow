@@ -3,13 +3,13 @@
 | Field | Value |
 |-------|-------|
 | Document type | New-session handoff |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Ready for a fresh agent |
 | Owner | Moses (P2) |
 | Last updated | 2026-08-29 |
 | Related documents | [p2-progress.md](p2-progress.md), [handshake-p1.md](handshake-p1.md), [p2-decisions.md](p2-decisions.md) |
 | Prerequisites | Branch `dev` tracking `origin/dev` |
-| Revision summary | Handoff after Phase 4 bookings (unmounted) |
+| Revision summary | Handoff after Close Wave 1 handshake; wait for P1 mount |
 
 You are **P2 (Moses)** on CareFlow Kenya pretriage. Do not rebuild Wave 0. Do not edit hub files. Do not touch the frontend.
 
@@ -27,7 +27,8 @@ You are **P2 (Moses)** on CareFlow Kenya pretriage. Do not rebuild Wave 0. Do no
 - Branch: **`dev`**
 - Fork: `origin` = `CamlineKe/CareFlow` (we can push)
 - Team: `upstream` = `exabyteso/CareFlow` (no write from CamlineKe)
-- P2 commits on origin/dev include ranking, catalog, map, and (this session) unmounted bookings
+- P2 commits on origin/dev include ranking, catalog, map, unmounted bookings, and Close Wave 1 handshake notes
+- Handshake for Ethan is copy-paste ready: [handshake-p1.md](handshake-p1.md)
 - P1 has **not** landed on `upstream/dev` (still the names-doc commit). Skip waiting unless the user says Ethan pushed.
 
 ## Done (do not redo)
@@ -38,6 +39,7 @@ You are **P2 (Moses)** on CareFlow Kenya pretriage. Do not rebuild Wave 0. Do no
 | Kenya catalog 52 rows | `backend/data/kenya-symptoms.json` | N/A |
 | `POST /symptoms/map` | `backend/app/symptoms/` | **No** (handshake) |
 | `POST /bookings` wait +1 | `backend/app/bookings/` | **No** (handshake) |
+| KEPH / red-flag rules | `backend/app/triage/` | N/A (no HTTP) |
 
 Decisions: [p2-decisions.md](p2-decisions.md) (hash embeddings, public map, no live KMHFR, rules on map/book from catalog).
 
@@ -45,12 +47,15 @@ Decisions: [p2-decisions.md](p2-decisions.md) (hash embeddings, public map, no l
 
 Hubs: `main.py`, `core/**`, `.env.example`, `pyproject.toml`, Alembic, `docs/api/README.md`, `docs/api/conventions.md`, `frontend/`, `backend/tests/`, wait **decrement**.
 
-## Next phases (pick with the user)
+## Next (this is the next chat)
 
-1. **P1 merge** when Ethan pushes: rebase `origin/dev` onto `upstream/dev`, confirm both routers are mounted, re-export OpenAPI. Handshake copy: [handshake-p1.md](handshake-p1.md).
-2. **e5-small embeddings** (needs P1 pyproject extra). Until then map is exact-phrase hash (`careflow-hash-v1`).
-3. **KMHFR ingest** (blocked on missing scorecards unless the user waives).
-4. **`triage/` package** (optional extract of `symptoms/rules.py`). Bookings already call that helper.
+**P1 merge** when Ethan pushes: rebase `origin/dev` onto `upstream/dev`, confirm both routers are mounted, then P2 updates domain-chapter "mounted" snapshots. Handshake copy: [handshake-p1.md](handshake-p1.md). After mount, P1 re-exports OpenAPI.
+
+Blocked until then (do not start unless the user waives):
+
+1. **e5-small embeddings** (needs P1 pyproject extra). Until then map is exact-phrase hash (`careflow-hash-v1`).
+2. **KMHFR ingest** (blocked on missing scorecards unless the user waives).
+3. Catalog 52 → 100–200.
 
 ## Tests
 

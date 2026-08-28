@@ -3,18 +3,18 @@
 | Field | Value |
 |-------|-------|
 | Document type | Working decisions (P2 Wave 1) |
-| Version | 0.1 |
+| Version | 0.2 |
 | Status | Draft (defaults locked after grill + work-with-assumptions) |
 | Owner | Moses (P2) |
 | Last updated | 2026-08-29 |
 | Related documents | [p2-task-map.md](p2-task-map.md), [p2-wave1-plan.md](p2-wave1-plan.md), [team-issues.md](../plans/team-issues.md) |
 | Prerequisites | [p2-task-map.md](p2-task-map.md) |
-| Revision summary | Locked defaults so Wave 1 coding can start |
+| Revision summary | Deferred: bookings increment is done unmounted |
 
 ## Assumptions
 
 - Wave 1 ships **catalog + map + red-flag ranking** on the Nairobi seed. Live KMHFR is designed, not called. `[needs validation]` until Tester lands datasource scorecards or the team waives the kenya-pretriage hard rule.
-- P3 Wave 1 can call `POST /symptoms/map` then `GET /facilities/recommend` with `keph_min` and `red_flag` from the map response. Book stays Wave 2.
+- P3 Wave 1 can call `POST /symptoms/map` then `GET /facilities/recommend` with `keph_min` and `red_flag` from the map response. Bookings package exists unmounted; P3 book UI waits on P1 `include_router`.
 - Feature tests under `backend/app/<pkg>/tests/` reuse `backend/tests/conftest.py` fixtures. Tester still owns `backend/tests/` smoke files; we do not edit them.
 - Embedding quality in production needs `intfloat/multilingual-e5-small`. Until P1 merges the extra, tests insert fixture vectors; seed of real embeddings is gated. `[needs validation]` handshake timing.
 
@@ -32,10 +32,13 @@
 
 ## Deferred
 
-- Wave 2: `triage/` package, `POST /bookings`, wait increment, patient auth on map.
+- Patient auth on `POST /symptoms/map` (map stays public; D-P2-04).
+- e5-small at seed (`careflow-hash-v1` until P1 pyproject extra).
 - Live KMHFR sync and Esri QA.
 - Raising catalog to 100–200 symptoms.
 - Tuning 0.55 from labelled utterances.
+
+**Done unmounted (not deferred):** `POST /bookings` wait increment. Lives in `backend/app/bookings/`. Not on `main.py` until P1. Decrement remains P4.
 
 ## Grill (closed)
 

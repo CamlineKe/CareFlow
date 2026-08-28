@@ -2,12 +2,18 @@
 
 from __future__ import annotations
 
-from app.symptoms.catalog import Symptom
+from typing import Protocol
+
 
 RED_FLAG_KEPH_MIN = 4
 
 
-def rules_from_symptoms(rows: tuple[Symptom, ...] | list[Symptom]) -> tuple[int, bool]:
+class RuleSymptom(Protocol):
+    keph_min: int
+    red_flag: bool
+
+
+def rules_from_symptoms(rows: tuple[RuleSymptom, ...] | list[RuleSymptom]) -> tuple[int, bool]:
     """Return ``(keph_min, red_flag)`` for recommend.
 
     Floor is MAX(keph_min). Any red-flag row lifts the floor to at least 4.

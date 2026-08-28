@@ -9,7 +9,7 @@
 | Last updated | 2026-08-29 |
 | Related documents | [p2-decisions.md](p2-decisions.md), [p2-wave1-plan.md](p2-wave1-plan.md), [team-issues.md](../plans/team-issues.md), [kenya-pretriage.md](../plans/kenya-pretriage.md), [product-spec.md](../plans/product-spec.md), [product-schema.md](../plans/product-schema.md), [user-journeys.md](../plans/user-journeys.md), [merge-clash-avoidance.md](../plans/merge-clash-avoidance.md), [ARCHITECTURE.md](../ARCHITECTURE.md), [decision-log.md](../research/decision-log.md) |
 | Prerequisites | Wave 0 baseline on `dev` / `main` (already landed) |
-| Revision summary | Linked Wave 1 decisions; open questions closed in p2-decisions.md |
+| Revision summary | §4 as-built: red-flag live; map and bookings unmounted |
 
 This is a map, not an approved implementation plan. Wave 1 phases and locked defaults: [p2-wave1-plan.md](p2-wave1-plan.md), [p2-decisions.md](p2-decisions.md).
 
@@ -78,11 +78,13 @@ Wave 0 baseline is on this branch. Handover rule: start from it.
 | Alembic `0001` | **Full product DDL** including `facilities`, `symptoms`, `symptom_synonyms`, `bookings` | `backend/alembic/` |
 | Nairobi seed + routine recommend | Live (J7) | `backend/app/facilities/`, `backend/data/nairobi-facilities.json` |
 | PWA shells | Live | `frontend/` (not ours) |
-| `POST /symptoms/map` | **Not** in `main.py` | Planned P2 Wave 1 |
-| Red-flag ranking | **Not** implemented | Comment in `facilities/router.py` says it is P2 |
+| `POST /symptoms/map` | Handler in package; **not** in `main.py` | P1 handshake |
+| `POST /bookings` | Handler in package; **not** in `main.py` | P1 handshake |
+| Red-flag ranking | **Implemented** (`red_flag` query, seed only) | Same + KMHFR rows later |
 | Live KMHFR sync | **Not** implemented | Seed only; `source` enum already has `kmhfr` |
-| `symptoms/`, `triage/`, `bookings/` packages | **Absent** | Create in our trees |
-| Embedding extra | **Absent** | Handshake P1 |
+| `symptoms/`, `bookings/` packages | **Present** (unmounted) | P1 `include_router` |
+| `triage/` package | **Present** (rules only, no HTTP) | Map and book import `app.triage.rules` |
+| Embedding extra | **Absent** | Handshake P1 when seeding e5-small |
 
 Recommend today: Kenya bbox, `keph_min` 2–6, wait then `earth_distance`, empty-table Nairobi seed. Auth ignored (public). Seed codes look like `SEED-NBO-KNH`, not live KMHFR codes.
 
@@ -177,7 +179,7 @@ Tester (Kalungu) owns scorecard expansion. P2 should not invent a second SoT. Pr
 | Red-flag recommend | **Implemented** (`red_flag` query, seed only) | Same + KMHFR rows later |
 | Symptom catalog | 52-row JSON + validators + empty-table seed | Embeddings + map API |
 | `POST /symptoms/map` | Handler in package; not mounted | P1 include_router |
-| Rules → KEPH | `symptoms/rules.py` used by map and book | Optional extract to `triage/` |
+| Rules → KEPH | `app.triage.rules` used by map and book | Same |
 | KMHFR sync | Missing | Cache + seed fallback; Esri not SoT |
 | `POST /bookings` | Handler in package; not mounted | P1 include_router |
 | Embedding dep + Settings | Missing | Handshake P1 |
@@ -214,4 +216,4 @@ Wave 1 parallel split from the issue: `facilities/` (D, E) vs `symptoms/` (B, C)
 
 ## 14. Next
 
-Phase 4 bookings are on `origin/dev`. Next session: [START-HERE.md](START-HERE.md).
+Wave 1 packages are on `origin/dev` (map and bookings unmounted). Handshake is copy-paste ready. Next session: [START-HERE.md](START-HERE.md).

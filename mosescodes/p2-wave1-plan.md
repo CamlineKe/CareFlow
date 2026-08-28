@@ -3,13 +3,13 @@
 | Field | Value |
 |-------|-------|
 | Document type | Implementation plan |
-| Version | 0.1 |
-| Status | Phases 1–4 on origin/dev |
+| Version | 0.2 |
+| Status | Phases 1–4 written; handshake copy-paste ready; wait on P1 mount |
 | Owner | Moses (P2) |
 | Last updated | 2026-08-29 |
 | Related documents | [p2-decisions.md](p2-decisions.md), [p2-task-map.md](p2-task-map.md), [p2-progress.md](p2-progress.md), [START-HERE.md](START-HERE.md), [merge-clash-avoidance.md](../plans/merge-clash-avoidance.md) |
 | Prerequisites | Decisions D-P2-01 … D-P2-07 |
-| Revision summary | Added Phase 4 instant bookings (unmounted) |
+| Revision summary | Close Wave 1: packages written; remaining P2 value is P1 mount |
 
 ## Goals and constraints
 
@@ -29,6 +29,8 @@
 | **4. Instant bookings** | `POST /bookings` wait +1 | `bookings/` | Phase 2 catalog (map optional) | P1: `include_router` |
 | **5. Real embeddings** | e5-small at seed time | seed job | Phase 3 | P1: pyproject extra |
 | **6. KMHFR ingest** | Live sync | `facilities/` sync | Scorecards | P1: Settings / env name if token |
+
+Phases 1–4 packages are written on `origin/dev`. Remaining P2 value is P1 mount ([handshake-p1.md](handshake-p1.md)), then Phase 5/6 when unblocked.
 
 Phase 1 acceptance: `red_flag=false` keeps J7 wait-then-distance; `red_flag=true` drops KEPH &lt; 4 and sorts by distance only; Kangemi (Level 3) never appears on red-flag.
 

@@ -112,5 +112,6 @@ P4 marks arrived/no-show and decrements wait. P5 sends SMS from the booking id. 
 
 - Route: `backend/app/bookings/router.py`
 - Create txn: `backend/app/bookings/create.py`
+- Rules: `backend/app/triage/rules.py`
 - Tests: `backend/app/bookings/tests/test_create.py`
 - Handshake: `mosescodes/handshake-p1.md`

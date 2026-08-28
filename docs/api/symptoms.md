@@ -154,6 +154,7 @@ STT is P5 (`POST /voice/stt`). This route consumes **text** only.
 |------|--------|
 | Catalog JSON + validators | **Implemented** |
 | Hash synonym vectors + `POST /symptoms/map` handler | **Implemented** (package) |
+| KEPH / red-flag rules (`app.triage`) | **Implemented** (no HTTP) |
 | Mounted on `main.py` | **Not implemented** (P1 handshake) |
 | `intfloat/multilingual-e5-small` | **Not implemented** (Phase 4) |
 
@@ -161,8 +162,9 @@ STT is P5 (`POST /voice/stt`). This route consumes **text** only.
 
 - Route: `backend/app/symptoms/router.py`
 - Mapper: `backend/app/symptoms/mapper.py`
+- Rules: `backend/app/triage/rules.py`
 - Embeddings: `backend/app/symptoms/embeddings.py`
 - Seed: `backend/app/symptoms/seed.py`
 - Catalog: `backend/data/kenya-symptoms.json`
 - Handshake: `mosescodes/handshake-p1.md`
-- Tests: `backend/app/symptoms/tests/`
+- Tests: `backend/app/symptoms/tests/`, `backend/app/triage/tests/`

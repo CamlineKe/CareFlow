@@ -11,8 +11,8 @@ from sqlalchemy import bindparam, text
 from sqlalchemy.orm import Session
 
 from app.symptoms.catalog import load_catalog
-from app.symptoms.rules import rules_from_symptoms
 from app.symptoms.seed import ensure_symptom_catalog
+from app.triage.rules import rules_from_symptoms
 
 _LOCK_FACILITY = text(
     """

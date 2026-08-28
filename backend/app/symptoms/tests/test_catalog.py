@@ -1,7 +1,7 @@
 """Catalog JSON validation. No database and no FastAPI."""
 
 from app.symptoms.catalog import CatalogError, load_catalog, parse_catalog
-from app.symptoms.rules import rules_from_symptoms
+from app.triage.rules import rules_from_symptoms
 
 _J2 = (
     "chest-pain",

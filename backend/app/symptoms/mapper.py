@@ -14,8 +14,8 @@ from app.symptoms.embeddings import (
     embed_phrase,
     vector_literal,
 )
-from app.symptoms.rules import rules_from_symptoms
 from app.symptoms.seed import ensure_symptom_catalog, ensure_synonym_embeddings
+from app.triage.rules import rules_from_symptoms
 
 _MAP_SQL = text(
     """
