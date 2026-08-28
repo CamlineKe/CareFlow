@@ -1,0 +1,34 @@
+---
+description: >-
+  Senior / PR / code review requests — follow .cursor/skills/senior-review and
+  .claude/commands/senior-review.md
+alwaysApply: false
+---
+
+# Senior / PR / code review
+
+To force this workflow, **@-mention** `@.cursor/rules/senior-code-review.mdc` when starting a review.
+
+## When this rule applies
+
+Treat the conversation as a **review request** when the user asks for:
+
+- Senior, staff, or experienced engineer review
+- Code review, PR review, merge request review, diff review
+- Review of specific files, a directory, a glob, or a pasted snippet
+
+If they only ask generic questions with **no** code or paths, answer normally — do not run the full review format.
+
+## What to do
+
+1. Read **`.cursor/skills/senior-review/SKILL.md`** (canonical workflow).
+2. Read **`.claude/commands/senior-review.md`** for the executable prompt and output schema.
+3. Substitute the user's scope for **`$ARGUMENTS`**. If scope is missing, ask once for paths, glob, directory, or snippet.
+
+## Mode
+
+Run the review in **Ask mode** (read-only). Apply fixes in a separate **Agent** session.
+
+## Stack
+
+Project stack: **generic**. See **AGENTS.md** for layer boundaries and test commands.

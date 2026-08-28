@@ -1,0 +1,20 @@
+# Pandoc defaults for pdf-generation secondary pipeline (Markdown → standalone HTML).
+# Usage from repo root:
+#   pandoc --defaults=.cursor/skills/pdf-generation/reference/pandoc-defaults.yaml \
+#     input.md -o /tmp/render.html
+# Then: scripts/pdf/render-html.sh /tmp/render.html output.pdf
+#
+# Adjust css path if invoking from another cwd.
+
+from: markdown
+to: html5
+standalone: true
+self-contained: false
+table-of-contents: false
+number-sections: false
+css:
+  - print.css
+metadata:
+  lang: en
+variables:
+  document-css: false

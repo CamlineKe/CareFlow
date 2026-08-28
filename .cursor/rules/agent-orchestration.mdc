@@ -1,0 +1,82 @@
+---
+description: Parent agent orchestrates subagents; context budgets and fan-out/fan-in
+alwaysApply: true
+---
+
+# Agent Orchestration
+
+The **parent agent is the orchestrator**. It plans work, delegates execution, merges results, makes decisions, and applies final edits. Subagents are workers with isolated context — use them to keep the parent lean.
+
+## Context budget
+
+| Role | Ceiling | Notes |
+|------|---------|-------|
+| **Orchestrating parent** | ~**85%** | Stop spawning; close the wave; merge and verify |
+| **Worker / in-thread implementer** | ~**90%** | Delegate before heavy exploration or large diffs |
+| **Tiered escalation** | 70–90% | Summaries only; no raw log dumps to parent |
+| **≥90%** | Mandatory | Delegate or checkpoint; do not continue broad refactors |
+
+Leave headroom for tool results, follow-up edits, and unexpected expansion.
+
+## Parent vs subagent roles
+
+| Parent (orchestrator) | Subagent (worker) |
+|-----------------------|-------------------|
+| Understand the user goal and plan phases | Execute one narrow slice |
+| Choose when to delegate vs act directly | Read/search/edit within assigned scope |
+| Launch parallel workers when independent | Return structured summaries, not raw dumps |
+| Synthesize findings into decisions | Do not expand scope beyond the brief |
+| Apply final edits, run validation, respond | Stop when the brief is done |
+
+## When to delegate
+
+Use the Task tool when **any** of these apply:
+
+- Context is already near or above ~90%
+- The task spans many files, directories, or a large refactor
+- Exploration would require reading many files in one session
+- Independent workstreams exist (disjoint paths)
+- You expect remaining work to push context past ~90%
+
+## When to stay in the parent
+
+- The task is small, localized, or needs only a few file reads
+- Subagent overhead would cost more context than doing the work directly
+- Steps are tightly coupled and must be reasoned about sequentially
+- You already have enough context to finish without more discovery
+
+## How to delegate
+
+1. **Scope narrowly** — one module, one failure, one API area, one test suite.
+2. **Write a self-contained brief** — subagents do not see prior chat; include goal, paths, constraints, and expected deliverable.
+3. **Pick the right worker** — `explore` for read-only mapping; `shell` for commands/git/CI; `generalPurpose` for mixed research + edits; project agents under `.cursor/agents/`.
+4. **Parallelize independence** — launch unrelated subagents in one message; sequence only when outputs are inputs.
+5. **Require compact returns** — summaries, file paths, key findings, blockers.
+6. **Merge, don't re-ingest** — parent synthesizes summaries; avoid re-reading large files the subagent already analyzed.
+
+## Wave gates
+
+After parallel subagent waves:
+
+1. Parent merges / resolves conflicts
+2. Run **`echo 'Set TEST_COMMAND in docs/testing-reference.md'`** (or narrowed test scope)
+3. **Senior review in Ask** on the changed scope
+4. Next wave only after blockers are addressed
+
+See [docs/agent-and-subagent-workflow.md](../../docs/agent-and-subagent-workflow.md) for the full workflow.
+
+## Anti-patterns
+
+```
+❌ Parent reads 40 files to map the codebase
+✅ explore subagent maps; parent uses the summary
+
+❌ Parent continues a large refactor at ~90% context
+✅ Split remaining modules across parallel subagents; parent merges
+
+❌ One vague subagent: "fix everything"
+✅ Parallel subagents with disjoint path ownership
+
+❌ Delegate a 3-line fix
+✅ Parent applies the fix directly
+```

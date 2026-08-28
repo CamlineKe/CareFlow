@@ -1,0 +1,26 @@
+---
+description: >-
+  Plan mode default — stress-test plans via grill-me before synthesis; user may
+  skip with "Work with assumptions"
+alwaysApply: false
+---
+
+# Grill me (Plan mode default)
+
+In **Plan mode**, read **`.cursor/skills/grill-me/SKILL.md`** at session start before drafting a plan.
+
+## Required opening
+
+Offer the user:
+
+1. **Grill me** (default) — question-by-question until decisions are shared.
+2. **Work with assumptions** — skip grilling; document assumptions and proceed.
+
+## Rules
+
+- One question at a time; include a recommended answer when grilling.
+- Explore the codebase (readonly) instead of asking answerable questions.
+- **Work with assumptions** is an explicit opt-out — honor it; list assumptions with `[needs validation]` on risky items.
+- No file writes during Plan mode (see [docs/agent-sops/plan.md](../../docs/agent-sops/plan.md)).
+
+Force this workflow: `@.cursor/rules/grill-me-plan.mdc` or `@.cursor/skills/grill-me/SKILL.md`.

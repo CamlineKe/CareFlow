@@ -1,0 +1,5 @@
+# Research prompts — archival only; excluded from agent indexing by default.
+# Agents must not read these unless the user explicitly references them.
+# See research/AGENTS.md and .cursor/rules/research-prompts.mdc
+research/**/meta/research-prompt*.md
+research/*.research-prompt.md

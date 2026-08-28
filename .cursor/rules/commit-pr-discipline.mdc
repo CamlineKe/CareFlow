@@ -1,0 +1,23 @@
+---
+description: Git commit and PR discipline — commit only when asked; use gh for PRs
+alwaysApply: true
+---
+
+# Commit and PR discipline
+
+## Commits
+
+- **Only create commits when the user explicitly asks.**
+- Never amend unless the user requests it and amend preconditions are met (your commit, not pushed, hook auto-fix).
+- Never skip hooks (`--no-verify`) unless the user explicitly requests it.
+- Do not commit secrets (`.env`, credentials files).
+
+## Pull requests
+
+- Use **`gh`** for GitHub PRs, issues, and checks when the user asks for a PR.
+- Never force-push to `main` / `master` without explicit user request and warning.
+- Draft PR summaries from **all** commits on the branch, not only the latest.
+
+## Pushes
+
+- Do not push to remote unless the user explicitly asks.

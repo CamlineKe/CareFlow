@@ -1,0 +1,5 @@
+@page { size: A4; margin: 20mm; }
+body { font-family: Georgia, serif; max-width: 100%; line-height: 1.5; }
+h1 { color: #1a365d; page-break-after: avoid; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #ccc; padding: 6px; }

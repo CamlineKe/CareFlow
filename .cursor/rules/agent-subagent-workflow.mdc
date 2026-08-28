@@ -1,0 +1,15 @@
+---
+description: When building with subagents or parallel Task workers, follow the canonical workflow doc
+alwaysApply: false
+globs:
+---
+
+# Build with subagents
+
+When the user, a plan, or repo instructions mention **building with subagents**, parallel **Task** subagents, or multi-agent implementation waves:
+
+1. Read **[docs/agent-and-subagent-workflow.md](../../docs/agent-and-subagent-workflow.md)** end-to-end before partitioning work.
+2. Apply **[agent-orchestration.mdc](./agent-orchestration.mdc)** context budgets and delegation rules.
+3. Use **disjoint ownership** — no two agents edit the same file in the same wave.
+
+**Narrow exception:** If the parent can **complete the entire scoped task** in one thread and will stay **under ~90%** context, it may implement in-thread without parallel Task subagents — still follow runner/fixer splits for slow integration tests where relevant.

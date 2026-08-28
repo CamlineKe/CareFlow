@@ -1,0 +1,18 @@
+# Secrets — managed by Phantom (https://phm.dev)
+.env
+.env.*
+!.env.example
+.phantom/audit.log
+
+# Dependencies and virtualenvs
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Generated smoke-test output
+scripts/pdf/.smoke-out/
+
+# OS / editor
+.DS_Store

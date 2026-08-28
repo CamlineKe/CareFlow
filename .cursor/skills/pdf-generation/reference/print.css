@@ -1,0 +1,58 @@
+/* Print stylesheet for pdf-generation — A4 via Playwright page.pdf() */
+
+@page {
+  size: A4;
+  margin: 20mm;
+}
+
+html {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  max-width: 100%;
+  line-height: 1.5;
+  color: #1a1a1a;
+}
+
+h1, h2, h3 {
+  page-break-after: avoid;
+}
+
+h1 {
+  color: #1a365d;
+}
+
+p, li {
+  orphans: 3;
+  widows: 3;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  page-break-inside: avoid;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 6px;
+}
+
+tr {
+  page-break-inside: avoid;
+}
+
+.page-break {
+  page-break-before: always;
+}
+
+@media print {
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    color: #555;
+  }
+}

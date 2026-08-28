@@ -1,0 +1,39 @@
+---
+description: >-
+  Optional API reference docs — human + agent chapters under docs/api/ (enable
+  api-docs module at init; attach when writing or refreshing API prose)
+alwaysApply: false
+globs: "docs/api/**"
+---
+
+# API reference documentation (`docs/api/`)
+
+Enable only when the **`api-docs`** module was selected at `cursor init` (or `render.sh --modules api-docs`).
+
+## Purpose
+
+Close gaps where **OpenAPI alone** is insufficient: query allowlists, pagination envelopes, auth scopes, error codes, lifecycle semantics, and frontend-oriented view → API mapping.
+
+## Authoring contract
+
+Read and follow **[docs/api/AGENTS.md](../../docs/api/AGENTS.md)** for chapter outline, quality bar, and subagent delegation rules.
+
+| Doc | Role |
+|-----|------|
+| [docs/api/README.md](../../docs/api/README.md) | Route map, precedence, maintainer checklist |
+| [docs/api/conventions.md](../../docs/api/conventions.md) | Cross-cutting prefix, auth, money/time, errors |
+| [docs/api/pagination-sorting-and-query-keys.md](../../docs/api/pagination-sorting-and-query-keys.md) | List contracts master table |
+| Domain `docs/api/<domain>.md` | Per-area depth (mirror reference chapter in AGENTS.md) |
+
+## When to delegate
+
+For **new domain chapters** or **many routes in one pass**, spawn a documentation subagent with disjoint ownership (`docs/api/**` only)—see **Subagent orchestration** in AGENTS.md. Parent keeps handler/tests work separate.
+
+## Stack paths (customize in AGENTS.md / conventions)
+
+- Routes: `backend/<route-registry>`
+- Handlers: `backend/<handlers>/`
+- Schemas: `backend/<schemas>/`
+- OpenAPI: `backend/openapi/openapi.yaml`
+
+See [docs/stack-api-reference.md](../../docs/stack-api-reference.md).

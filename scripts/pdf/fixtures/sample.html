@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Smoke Test — HTML to PDF</title>
+<style>
+@page { size: A4; margin: 20mm; }
+body { font-family: Georgia, serif; line-height: 1.5; color: #222; }
+h1 { color: #1a365d; border-bottom: 2px solid #1a365d; padding-bottom: 0.25em; }
+.page-break { page-break-before: always; }
+table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+th { background: #edf2f7; }
+footer { margin-top: 2em; font-size: 0.85em; color: #666; }
+</style>
+</head>
+<body>
+<h1>PDF Smoke Test — HTML</h1>
+<p>Primary pipeline: HTML/CSS rendered via headless Chromium (Playwright).</p>
+<table>
+<tr><th>Pipeline</th><th>Tier</th></tr>
+<tr><td>Playwright</td><td>Primary</td></tr>
+<tr><td>Pandoc</td><td>Secondary</td></tr>
+<tr><td>ReportLab</td><td>Tertiary</td></tr>
+</table>
+<div class="page-break"></div>
+<h1>Page Two</h1>
+<p>Multi-page A4 test with explicit page break.</p>
+<footer>cursor-scaffold pdf-generation smoke test</footer>
+</body>
+</html>

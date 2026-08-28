@@ -1,0 +1,63 @@
+---
+description: Top-level directory README practice — one README per top-level folder; nested READMEs only when the user asks
+alwaysApply: true
+---
+
+# Directory README practice
+
+Keep repository navigation discoverable without duplicating deep runbooks in every folder.
+
+## Scope
+
+| Level | README required? |
+|-------|------------------|
+| **Repository root** | Yes — `README.md` (prod / high-level) + optional `ONBOARDING.md` (local dev deep dive) |
+| **Each top-level directory** | Yes — `README.md` explaining role, key files, and links |
+| **Nested subdirectories** | **No by default** — add only when the user explicitly requests deeper docs |
+
+**Skip README for:** `.cursor/`, `.claude/`, dot-directories, `node_modules/`, build output dirs, and other generated or tool-managed trees.
+
+Reference: [docs/directory-readme-practice.md](../../docs/directory-readme-practice.md). Examples: Finance `backend/` and `frontend/` (top-level only); avoid PropertyKenya-Backend-style README-per-subfolder unless asked.
+
+## Root README (`README.md`)
+
+**Audience:** ops, architects, new engineers scanning the repo.
+
+Include:
+
+- One-line purpose and what **does not** live in this repo (if applicable)
+- High-level topology or architecture (tables/diagrams OK; keep local URLs out)
+- **Documentation map** — table linking each top-level directory to its `README.md` (not inline command encyclopedias)
+- Links: **[ONBOARDING.md](../../ONBOARDING.md)** (local setup), **[AGENTS.md](../../AGENTS.md)** (agents)
+- Polyrepo / sibling repos: **GitHub URL + default local path + env var** when paths are configurable — do not assume `../` layouts on every machine
+
+Relocate local quickstart, full command matrices, and localhost URL tables to **ONBOARDING.md**.
+
+## ONBOARDING (`ONBOARDING.md`)
+
+**Audience:** engineers doing first-time local setup.
+
+Include prerequisites, clone/configure/run, verification, and a **directory map** table (same rows as root README). Link to directory READMEs — do not duplicate their content.
+
+## Top-level directory README (`<dir>/README.md`)
+
+Keep each file **short** (roughly one screen). Pattern:
+
+1. **Role** — 1–2 sentences on what the directory is for
+2. **Key files** — table of important files/scripts/configs (not every file)
+3. **Related** — links up (`../README.md`, `../ONBOARDING.md`) and to sibling docs
+4. Optional **Up:** link to repository root
+
+Do **not** paste full env-var catalogs, test harness docs, or agent SOPs — link to `docs/` instead.
+
+## When to create or update
+
+- **New top-level directory** → add `README.md` in the same change; update root README and ONBOARDING directory maps
+- **New script or committed plan** → add a row to `scripts/README.md` or `plans/README.md`
+- **Doc restructure task** → audit top-level dirs for missing READMEs; do not recurse into nested dirs unless the user asks
+
+## Agent behaviour
+
+- Prefer **linking** over **copying** prose between README, ONBOARDING, and `docs/`
+- Never embed secrets or real credentials in README files
+- Do not create nested `README.md` files proactively — even when adding a new package or route folder

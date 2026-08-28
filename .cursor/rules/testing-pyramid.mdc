@@ -1,0 +1,23 @@
+---
+description: Testing layers and narrow-fix-broaden iteration — see docs/testing-reference.md
+globs: "**/*"
+alwaysApply: false
+---
+
+# Testing pyramid
+
+Before running expensive integration or E2E suites:
+
+1. Prefer **unit** tests for pure logic and contracts.
+2. Use **integration** tests for boundaries (API, DB, HTTP).
+3. Reserve **E2E** for critical user paths after unit/integration are green.
+
+## Agent workflow
+
+- **Runner (read-only):** run narrowed tests; classify failure layer; return a short structured report.
+- **Fixer (scoped writes):** edit only the implicated layer; re-run narrow scope.
+- **Parent:** merge → runner → fixer until green; widen scope only when justified.
+
+Canonical commands and triage: **[docs/testing-reference.md](../../docs/testing-reference.md)**.
+
+Default test command: `echo 'Set TEST_COMMAND in docs/testing-reference.md'`
