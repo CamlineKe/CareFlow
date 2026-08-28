@@ -1,17 +1,17 @@
 # camlinedev (`camlinedev/`)
 
-Working notes to lock CareFlow's problem, functional requirements, and non-functional requirements **before** design or modelling. Not application code. Not a replacement for [plans/](../plans/) until the grill is closed and the team promotes a spec.
+Working notes to lock CareFlow's problem, functional requirements, non-functional requirements, and **product domain map** before high-level system design. Not application code. Not a replacement for [plans/](../plans/) until the team promotes a spec.
 
 | Field | Value |
 |-------|-------|
 | Document type | Working-notes index |
-| Version | 0.2 |
+| Version | 0.3 |
 | Status | Draft |
 | Owner | camline |
 | Last updated | 2026-08-28 |
 | Related documents | [plans/kenya-pretriage.md](../plans/kenya-pretriage.md), [plans/product-spec.md](../plans/product-spec.md), [plans/user-journeys.md](../plans/user-journeys.md) |
 | Prerequisites | None |
-| Revision summary | Tracked in git; grill-me questions live in [05-open-questions.md](05-open-questions.md) |
+| Revision summary | Added [product-map/](product-map/README.md): two sides, queue vs booking, invariants, scenarios |
 
 ## Key files
 
@@ -22,6 +22,7 @@ Working notes to lock CareFlow's problem, functional requirements, and non-funct
 | [03-functional-requirements.md](03-functional-requirements.md) | Draft FRs extracted from journeys and the spec |
 | [04-non-functional-requirements.md](04-non-functional-requirements.md) | Draft NFRs and missing quality attributes |
 | [05-open-questions.md](05-open-questions.md) | Grill me: decisions, Round 1 questions, blocked Round 2 |
+| [product-map/](product-map/README.md) | Visual domain map: two sides, end-to-end, queue, invariants, scenarios |
 
 ## Evidence tags
 
@@ -31,7 +32,7 @@ Working notes to lock CareFlow's problem, functional requirements, and non-funct
 
 ## What this folder is not
 
-- Domain model, API design, UI design, or stack lock-in
+- High-level system design, APIs, modules, or stack lock-in
 - A substitute for [research/](../research/) scorecards
 
 ## Related
