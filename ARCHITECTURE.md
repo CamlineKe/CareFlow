@@ -107,6 +107,7 @@ Journeys J1–J9: [plans/user-journeys.md](plans/user-journeys.md). Target J1 se
 | `GET /health` | Live, no DB ping | Same |
 | `GET /me` | Live; Firebase Admin + demo UIDs | Same |
 | `GET /facilities/recommend` | Live; Nairobi seed, wait-then-distance, Kenya bbox; **`red_flag=true`** nearest KEPH 4+ | + KMHFR sync |
+| Symptom catalog JSON | Live (`backend/data/kenya-symptoms.json`, 52 rows); DB seed helper not on boot yet | + embeddings + `POST /symptoms/map` |
 | `POST /symptoms/map` | Not in `main.py` | P2 |
 | `POST /bookings`, hospital queue / wait / arrived / no-show | Not in `main.py` | P2 / P4 |
 | `POST /voice/stt`, `/voice/tts`, notify, notes | Not in `main.py` | P5 |

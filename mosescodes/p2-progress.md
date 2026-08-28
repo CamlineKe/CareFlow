@@ -9,14 +9,15 @@
 | Last updated | 2026-08-29 |
 | Related documents | [p2-wave1-plan.md](p2-wave1-plan.md), [p2-decisions.md](p2-decisions.md) |
 | Prerequisites | [p2-wave1-plan.md](p2-wave1-plan.md) |
-| Revision summary | Phase 1 complete; Phase 2 next |
+| Revision summary | Phases 1–2 ready to push |
 
 Newest first.
 
 | Date | Phase | Status | Notes |
 |------|-------|--------|-------|
-| 2026-08-29 | 1. Red-flag ranking | **Done** (unpushed until you push) | `GET /facilities/recommend?red_flag=true`: floor `max(4, keph_min)`, sort by distance. J7 default unchanged. pytest/OpenAPI re-export still needed on a FastAPI venv. |
-| 2026-08-29 | 2. Symptom catalog JSON | **Next** | Committed JSON + validators + `symptoms` table seed. No map route. No embeddings. |
+| 2026-08-29 | 2. Symptom catalog JSON | **Committed with this push** | 52 rows in `backend/data/kenya-symptoms.json`. Validators + `ensure_symptom_catalog`. No map route. Extra-lang phrases need a speaker check. |
+| 2026-08-29 | 1. Red-flag ranking | **Committed** `9f47017` | `GET /facilities/recommend?red_flag=true`. |
+| 2026-08-29 | 3. Map API | **Next after Phase 2 is committed** | Handshake P1 for `include_router`. |
 
 ## Phase 1 files (landed)
 
@@ -24,6 +25,6 @@ Newest first.
 - `docs/api/facilities.md`, pagination, Postman, `backend/openapi/openapi.yaml`
 - `mosescodes/` map, decisions, wave plan
 
-## After you push
+## After this push
 
-Rebase or pull `upstream/dev` before the next hub handshake. Phase 2 does not touch hubs.
+Phase 3 (`POST /symptoms/map`) needs a P1 handshake for `include_router`. Do not edit hubs.

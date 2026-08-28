@@ -175,7 +175,7 @@ Tester (Kalungu) owns scorecard expansion. P2 should not invent a second SoT. Pr
 |---------|----------|-----------|
 | Routine recommend | Live, seed | Same + optional KMHFR rows when ingest is allowed |
 | Red-flag recommend | **Implemented** (`red_flag` query, seed only) | Same + KMHFR rows later |
-| Symptom catalog | Tables empty (DDL only) | Seed ~100–200 + synonyms + embeddings |
+| Symptom catalog | 52-row JSON + validators + empty-table seed | Embeddings + map API |
 | `POST /symptoms/map` | Missing | Text → ids + scores above floor |
 | Rules → KEPH | Missing | Catalog rules; vectors do not pick level |
 | KMHFR sync | Missing | Cache + seed fallback; Esri not SoT |
@@ -214,4 +214,4 @@ Wave 1 parallel split from the issue: `facilities/` (D, E) vs `symptoms/` (B, C)
 
 ## 14. Next
 
-Phase 1 is done (commit locally, you push). Phase 2 is the starter symptom catalog JSON plus loaders. No map route in Phase 2.
+Phases 1–2 are on `dev` for push. Phase 3 is `POST /symptoms/map` plus a P1 `include_router` handshake.

@@ -4,12 +4,12 @@
 |-------|-------|
 | Document type | Implementation plan |
 | Version | 0.1 |
-| Status | Phase 1 complete; Phase 2 approved to start |
+| Status | Phase 1 and 2 committed |
 | Owner | Moses (P2) |
 | Last updated | 2026-08-29 |
 | Related documents | [p2-decisions.md](p2-decisions.md), [p2-task-map.md](p2-task-map.md), [p2-progress.md](p2-progress.md), [merge-clash-avoidance.md](../plans/merge-clash-avoidance.md) |
 | Prerequisites | Decisions D-P2-01 … D-P2-07 |
-| Revision summary | Phase 1 done; Phase 2 is the starter catalog |
+| Revision summary | Phase 2 catalog JSON and loaders |
 
 ## Goals and constraints
 
@@ -48,3 +48,22 @@ Phase 1 acceptance: `red_flag=false` keeps J7 wait-then-distance; `red_flag=true
 **Does not change:** seed JSON, `main.py`, smoke tests in `backend/tests/test_recommend.py` (routine path must still pass).
 
 **Verification:** pytest for `app/facilities/tests` plus existing `tests/test_recommend.py` if the backend venv and Compose `db` are up. Re-export OpenAPI with `python -m app.export_openapi` from that venv so committed YAML matches live schema (this pass patched YAML by hand because host Python has no FastAPI).
+
+## Phase 2 detail
+
+**Outcome:** Starter Kenya catalog on disk (52 rows), validators, KEPH rules helper, and `symptoms` INSERT when the table is empty. No HTTP. No embeddings. Not wired to boot seed (avoids editing `app/seed.py` this phase).
+
+| File | Why | Change |
+|------|-----|--------|
+| `backend/data/kenya-symptoms.json` | Committed catalog | en+sw on every row; a few ki/luo/kln/kam |
+| `backend/app/symptoms/catalog.py` | Load + validate | Stdlib only |
+| `backend/app/symptoms/rules.py` | D-P2-05 | MAX keph_min + red-flag lift |
+| `backend/app/symptoms/seed.py` | Empty-table INSERT | Canonical rows only |
+| `backend/app/symptoms/tests/test_catalog.py` | No DB | Count, J2 slugs, langs, rules |
+| `backend/app/symptoms/tests/test_seed.py` | Needs Compose db | Insert once; no synonym rows |
+
+**Does not change:** `main.py`, `app/seed.py`, embeddings, `docs/api/symptoms.md`.
+
+**Verification:** `python3 -c` load of the catalog (passed, 52 rows). Seed pytest needs the backend venv + Postgres.
+
+Local-lang phrases (ki/luo/kln/kam) are starter seeds `[needs validation]` with a speaker.
