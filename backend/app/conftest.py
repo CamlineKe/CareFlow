@@ -36,29 +36,6 @@ def client() -> Generator:
 
 @pytest.fixture
 def db_reset() -> None:
-    """Wipe users and facilities so recommend re-seeds. Booking children first."""
-    from sqlalchemy import text
+    from app.db_wipe import wipe_product_rows
 
-    from app.core.db import SessionLocal
-
-    session = SessionLocal()
-    try:
-        session.execute(text("DELETE FROM note_images"))
-        session.execute(text("DELETE FROM notes"))
-        session.execute(text("DELETE FROM notify_jobs"))
-        session.execute(text("DELETE FROM booking_symptoms"))
-        session.execute(text("DELETE FROM booking_instant"))
-        session.execute(text("DELETE FROM booking_appointments"))
-        session.execute(text("DELETE FROM booking_facility_snapshots"))
-        session.execute(text("DELETE FROM bookings"))
-        session.execute(text("DELETE FROM user_preferred_facilities"))
-        session.execute(text("DELETE FROM patient_profiles"))
-        session.execute(text("DELETE FROM departments"))
-        session.execute(text("DELETE FROM users"))
-        session.execute(text("DELETE FROM facilities"))
-        session.commit()
-    except Exception:
-        session.rollback()
-        raise
-    finally:
-        session.close()
+    wipe_product_rows()

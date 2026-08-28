@@ -7,6 +7,7 @@ from sqlalchemy import text
 from app.core.db import SessionLocal
 from app.core.errors import register_exception_handlers
 from app.bookings.router import router
+from app.db_wipe import owner_session, wipe_product_rows
 from app.facilities.seed import ensure_nairobi_seed
 from app.symptoms.seed import ensure_symptom_catalog
 
@@ -18,22 +19,7 @@ register_exception_handlers(_app)
 
 
 def _wipe() -> None:
-    session = SessionLocal()
-    try:
-        session.execute(text("DELETE FROM booking_symptoms"))
-        session.execute(text("DELETE FROM booking_instant"))
-        session.execute(text("DELETE FROM booking_facility_snapshots"))
-        session.execute(text("DELETE FROM bookings"))
-        session.execute(text("DELETE FROM users"))
-        session.execute(text("DELETE FROM facilities"))
-        session.execute(text("DELETE FROM symptom_synonyms"))
-        session.execute(text("DELETE FROM symptoms"))
-        session.commit()
-    except Exception:
-        session.rollback()
-        raise
-    finally:
-        session.close()
+    wipe_product_rows()
 
 
 def _seed() -> int:
@@ -81,8 +67,7 @@ def test_patient_books_and_wait_increments(mock_firebase_uid):
     assert body["facility"]["kmhfr_code"] == "SEED-NBO-KNH"
     assert body["facility"]["wait_count_at_book"] == wait_before
 
-    after = SessionLocal()
-    try:
+    with owner_session() as after:
         wait_after = int(
             after.execute(
                 text("SELECT wait_count FROM facilities WHERE id = :id"),
@@ -90,17 +75,13 @@ def test_patient_books_and_wait_increments(mock_firebase_uid):
             ).scalar_one()
         )
         kinds = after.execute(
-            text(
-                "SELECT booking_kind::text FROM bookings WHERE id = :id"
-            ),
+            text("SELECT booking_kind::text FROM bookings WHERE id = :id"),
             {"id": body["id"]},
         ).scalar_one()
         instant = after.execute(
             text("SELECT 1 FROM booking_instant WHERE booking_id = :id"),
             {"id": body["id"]},
         ).scalar_one()
-    finally:
-        after.close()
     assert wait_after == wait_before + 1
     assert kinds == "instant"
     assert instant == 1
