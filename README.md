@@ -22,6 +22,6 @@ This monorepo holds the locked product spec, research, agent scaffolding, and `b
 
 ## Conventions
 
-One repo, two app trees (`backend/`, `frontend/`) plus research and docs. Stack, topology, and polyrepo split are undecided — record those in [research/decision-log.md](research/decision-log.md) and a committed spec under `plans/` when they lock.
+One repo, two app trees (`backend/`, `frontend/`) plus research and docs. **Primary database is locked:** PostgreSQL + pgvector ([D-001](research/decision-log.md)). Application stack is in [plans/kenya-pretriage.md](plans/kenya-pretriage.md).
 
 See [docs/directory-readme-practice.md](docs/directory-readme-practice.md) for README conventions. Add a row to the table above when you introduce a new top-level directory.

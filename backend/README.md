@@ -1,12 +1,13 @@
 # Backend (`backend/`)
 
-API, domain logic, and persistence for CareFlow. Stack is **not chosen yet** — this folder is a placeholder until the product spec and stack decision land.
+API, domain logic, and persistence for CareFlow. **Persistence is locked:** PostgreSQL + pgvector ([D-001](../research/decision-log.md), [ADR](../docs/research/postgresql-primary-store.md)). Application code is still a placeholder until FastAPI lands per [plans/kenya-pretriage.md](../plans/kenya-pretriage.md).
 
 ## Key files
 
 | File | Role |
 |------|------|
-| *(none yet)* | Add a row when the first package, OpenAPI spec, or entrypoint exists |
+| [../plans/product-schema.md](../plans/product-schema.md) | Product DDL — first Alembic revision when FastAPI lands |
+| *(app package)* | Add a row when the first package, OpenAPI spec, or entrypoint exists |
 
 ## Related
 

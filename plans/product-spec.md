@@ -21,6 +21,8 @@ Manifest: `start_url` `/`, `display: standalone`, shortcuts to `/patient` and `/
 
 ## Domain
 
+Physical tables, enums, indexes, and `wait_count` transactions: [product-schema.md](product-schema.md).
+
 **Facility** — `kmhfr_code`, `name`, `keph_level` (2–6), `lat`, `lng`, `county`, `operational`, `wait_count`, `source`, `synced_at`. Kenya only. Drop null coordinates.
 
 **Symptom** — `id` (slug), `keph_min`, `red_flag`, optional `icd11_uri` / CIEL id. Synonyms: `lang` in `en`, `sw`, `ki`, `luo`, `kln`, `kam` + embedding in pgvector.

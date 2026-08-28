@@ -22,6 +22,7 @@ Agents: attach journeys and the issue that matches your person (P1–P5, T). Do 
 - **Reminders:** Africa’s Talking SMS and **ElevenLabs outbound calls** (Twilio). If ElevenLabs cannot speak the booking locale (Kikuyu/Luo/Kamba/Meru), **Pawa TTS** audio is played on the same Twilio call, or SMS-only if both fail.
 - **Voice providers:** **ElevenLabs first** for English/Kiswahili TTS and phone. **[Pawa AI](https://docs.pawa-ai.com/) fallback** wherever ElevenLabs is weak or errors (see Voice routing). Keys stay on the API (`POST /voice/stt`, `POST /voice/tts`).
 - **Stack:** Next.js + FastAPI + PostgreSQL + pgvector. SMS: Africa’s Talking. Voice: ElevenLabs + Pawa. Auth: Firebase (federated). FastAPI verifies ID tokens.
+- **Primary database (D-001, locked):** PostgreSQL + pgvector is the only product store. ADR: [docs/research/postgresql-primary-store.md](../docs/research/postgresql-primary-store.md). Do not introduce MongoDB, Cassandra, CockroachDB, or Firestore for bookings, facilities, wait counts, notes, or symptom vectors. Firebase is auth only.
 - **Client:** one PWA for iteration 1 — `/patient` and `/hospital` (installable, standalone). Not two native apps.
 - **Deploy:** local `docker-compose` (API + Postgres with pgvector). Render: Docker Web Service for FastAPI, Render PostgreSQL, second Web Service for Next.js (HTTPS for PWA). Firebase stays on Google.
 

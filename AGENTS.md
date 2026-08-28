@@ -4,7 +4,7 @@ Cross-tool baseline for humans and coding agents (Cursor, Claude Code, etc.).
 
 ## Stack
 
-- **Stack:** generic (backend and frontend **not chosen yet**)
+- **Stack:** Next.js + FastAPI; **PostgreSQL + pgvector** is the locked product store ([D-001](research/decision-log.md))
 - **Test:** `echo 'Set TEST_COMMAND in docs/testing-reference.md'`
 - **Lint:** `echo 'Set LINT_COMMAND in AGENTS.md'`
 
