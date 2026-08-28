@@ -10,6 +10,7 @@ Installable Next.js 15 PWA for CareFlow: role picker, care-seeker shell, and hos
 | `app/patient/page.tsx` | Care-seeker shell (`/patient`): pretriage disclaimer + 999 / go now |
 | `app/hospital/page.tsx` | Hospital desk shell (`/hospital`): this facility only |
 | `app/manifest.ts` | Web app manifest (`start_url` `/`, shortcuts `/patient` and `/hospital`) |
+| `lib/firebase.ts` | Firebase Auth client (`careflow-kenya`; Google + email/password) |
 | `public/sw.js` | Online-only service worker (does not cache API / recommend) |
 | `next.config.ts` | `output: 'standalone'` |
 
