@@ -67,3 +67,17 @@ Phase 1 acceptance: `red_flag=false` keeps J7 wait-then-distance; `red_flag=true
 **Verification:** `python3 -c` load of the catalog (passed, 52 rows). Seed pytest needs the backend venv + Postgres.
 
 Local-lang phrases (ki/luo/kln/kam) are starter seeds `[needs validation]` with a speaker.
+
+## Phase 3 detail
+
+**Outcome:** `POST /symptoms/map` in `backend/app/symptoms/` with hash embeddings. Not mounted until P1.
+
+| File | Why | Change |
+|------|-----|--------|
+| `embeddings.py` | No extra deps | `careflow-hash-v1`, dim 384, floor 0.55 |
+| `seed.py` | Synonym rows | `ensure_synonym_embeddings` |
+| `mapper.py` / `router.py` | HTTP + SQL cosine | Public POST |
+| `docs/api/symptoms.md` | Domain chapter we own | Full chapter |
+| `mosescodes/handshake-p1.md` | P1 include_router | Do not edit `main.py` |
+
+**Does not change:** `main.py`, `pyproject.toml`, `docs/api/README.md`.

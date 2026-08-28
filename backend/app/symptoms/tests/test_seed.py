@@ -43,5 +43,23 @@ def test_ensure_symptom_catalog_inserts_once():
             text("SELECT COUNT(*) FROM symptom_synonyms")
         ).scalar_one()
         assert synonym_count == 0
+
+
+def test_ensure_synonym_embeddings_inserts_once():
+    _wipe_symptoms()
+    session = SessionLocal()
+    try:
+        from app.symptoms.seed import ensure_synonym_embeddings
+
+        ensure_symptom_catalog(session)
+        ensure_synonym_embeddings(session)
+        session.commit()
+        ensure_synonym_embeddings(session)
+        session.commit()
+        expected = sum(len(row.synonyms) for row in load_catalog())
+        count = session.execute(text("SELECT COUNT(*) FROM symptom_synonyms")).scalar_one()
+        assert count == expected
+    finally:
+        session.close()
     finally:
         session.close()

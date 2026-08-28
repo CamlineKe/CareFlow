@@ -34,6 +34,7 @@ See [conventions.md](conventions.md) and [pagination-sorting-and-query-keys.md](
 |-------|---------|
 | `GET /health` | [health.md](health.md) |
 | `GET /me` | [me.md](me.md) |
+| `POST /symptoms/map` | [symptoms.md](symptoms.md) (unmounted until P1) |
 
 ## Shared types
 

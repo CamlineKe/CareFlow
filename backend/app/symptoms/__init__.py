@@ -1,1 +1,1 @@
-"""Kenya pretriage symptom catalog. Map API and embeddings land in later phases."""
+"""Kenya pretriage symptom catalog and map router (mount is a P1 handshake)."""

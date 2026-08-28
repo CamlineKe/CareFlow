@@ -123,6 +123,46 @@
           }
         }
       ]
+    },
+    {
+      "name": "symptoms",
+      "item": [
+        {
+          "name": "Map symptoms",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"text\":\"chest pain\",\"lang\":\"en\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/symptoms/map",
+              "host": ["{{baseUrl}}"],
+              "path": ["symptoms", "map"]
+            },
+            "description": "operationId: `mapSymptoms`. Maps text to catalog slugs. 404 until P1 include_router."
+          }
+        }
+      ]
     }
   ],
   "variable": [

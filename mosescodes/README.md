@@ -10,6 +10,7 @@ P2 working notes for Moses: Facilities, KMHFR, symptom catalog, later bookings. 
 | [p2-decisions.md](p2-decisions.md) | Grill outcomes and Wave 1 defaults |
 | [p2-wave1-plan.md](p2-wave1-plan.md) | Phased implementation |
 | [p2-progress.md](p2-progress.md) | What is done vs next |
+| [handshake-p1.md](handshake-p1.md) | Hub changes to send Ethan |
 
 Later flow write-ups and handshake notes stay in this folder so they do not collide with P1/P3/P4/P5 trees.
 
