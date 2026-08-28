@@ -1,0 +1,6 @@
+# Phantom vault — CareFlow. Secrets live in the OS keychain, not this file.
+# Local: phantom init && phantom add VAR_NAME (names in .env.example).
+
+[phantom]
+version = "1"
+project_id = "careflow"
