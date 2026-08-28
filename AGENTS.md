@@ -16,6 +16,7 @@ Cross-tool baseline for humans and coding agents (Cursor, Claude Code, etc.).
 | `frontend/` | User-facing app — empty until spec + stack land |
 | `docs/` | Agent SOPs, API reference stubs, testing reference |
 | `plans/` | Committed product/implementation specs |
+| `camlinedev/` | Pre-design working notes: problem, draft FRs/NFRs, grill-me questions — see [camlinedev/README.md](camlinedev/README.md) |
 | `research/` | Market & platform research (`big-picture/` + `ops/`) — see [research/README.md](research/README.md) and [research/AGENTS.md](research/AGENTS.md) |
 | `scripts/` | Root operational scripts (PDF pipeline) |
 

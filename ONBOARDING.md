@@ -34,6 +34,7 @@ Test and lint commands are placeholders until a stack is chosen. See [docs/testi
 | `frontend/` | [frontend/README.md](frontend/README.md) | User-facing app (stack TBD) |
 | `docs/` | [docs/README.md](docs/README.md) | Agent SOPs, API reference stubs, testing |
 | `plans/` | [plans/README.md](plans/README.md) | Committed specs, wave plan template |
+| `camlinedev/` | [camlinedev/README.md](camlinedev/README.md) | Pre-design problem, draft FRs/NFRs, grill-me questions |
 | `research/` | [research/README.md](research/README.md) | Market (`big-picture/`) and ops research |
 | `scripts/` | [scripts/README.md](scripts/README.md) | PDF generation and other root scripts |
 
