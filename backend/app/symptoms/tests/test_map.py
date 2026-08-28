@@ -1,7 +1,5 @@
 """POST /symptoms/map against a package-local app (main.py is a P1 hub)."""
 
-pytest_plugins = ["tests.conftest"]
-
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import text

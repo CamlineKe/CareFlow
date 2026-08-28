@@ -1,7 +1,5 @@
 """Insert canonical catalog rows when the symptoms table is empty."""
 
-pytest_plugins = ["tests.conftest"]
-
 from sqlalchemy import text
 
 from app.core.db import SessionLocal
