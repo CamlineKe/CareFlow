@@ -4,19 +4,18 @@ Cross-tool baseline for humans and coding agents (Cursor, Claude Code, etc.).
 
 ## Stack
 
-- **Stack:** Next.js + FastAPI; **PostgreSQL + pgvector** is the locked product store ([D-001](research/decision-log.md))
-- **Test:** `echo 'Set TEST_COMMAND in docs/testing-reference.md'`
-- **Lint:** `echo 'Set LINT_COMMAND in AGENTS.md'`
+- **Stack:** Next.js 15 PWA + FastAPI (Python 3.12); **PostgreSQL 16 + pgvector** is the locked product store ([D-001](research/decision-log.md))
+- **Test:** `cd backend && DEMO_NOTIFY=1 DATABASE_URL=postgresql://careflow:careflow@localhost:5432/careflow pytest`
+- **Lint:** `cd frontend && npm run lint` (no backend linter in `backend/pyproject.toml`)
 
 ## Repository boundaries
 
 | Path | Role |
 |------|------|
-| `backend/` | API and domain logic — empty until spec + stack land |
-| `frontend/` | User-facing app — empty until spec + stack land |
-| `docs/` | Agent SOPs, API reference stubs, testing reference |
+| `backend/` | FastAPI: `/health`, `/me`, `/facilities/recommend` (no `/v1`); Alembic `0001` |
+| `frontend/` | Next.js 15 PWA: `/` role picker, `/patient` care-seeker, `/hospital` desk |
+| `docs/` | Agent SOPs, API reference, testing reference; pre-design notes in [docs/camlinedev.md](docs/camlinedev.md) |
 | `plans/` | Committed product/implementation specs |
-| `camlinedev/` | Pre-design working notes: problem, draft FRs/NFRs, grill-me questions — see [camlinedev/README.md](camlinedev/README.md) |
 | `research/` | Market & platform research (`big-picture/` + `ops/`) — see [research/README.md](research/README.md) and [research/AGENTS.md](research/AGENTS.md) |
 | `scripts/` | Root operational scripts (PDF pipeline) |
 
@@ -28,6 +27,7 @@ Every **top-level** directory (except `.cursor/`, `.claude/`, and tool dirs) sho
 
 | Topic | Location |
 |--------|----------|
+| System architecture | [ARCHITECTURE.md](ARCHITECTURE.md) ([PlantUML](ARCHITECTURE.puml)) — target vs as-built |
 | Subagent orchestration | [docs/agent-and-subagent-workflow.md](docs/agent-and-subagent-workflow.md) |
 | Mode playbooks | [docs/agent-sops/](docs/agent-sops/) |
 | API reference (human + agent) | [docs/api/](docs/api/) — [AGENTS.md](docs/api/AGENTS.md) |
