@@ -98,7 +98,7 @@ Journeys J1–J9: [plans/user-journeys.md](plans/user-journeys.md). Target J1 se
 
 ## Deploy
 
-**Local:** [docker-compose.yml](docker-compose.yml) services `db` + `api`; PWA on the host (`next dev` `:3000`). **Render:** [render.yaml](render.yaml) names `careflow-api` + `careflow-db` — **not applied**. Next.js as a second HTTPS Web Service is planned (Wave 3). Secrets: Phantom locally; Render env in production. `DEMO_NOTIFY=1` never live-dials. Puml: `deploy`.
+**Local:** [docker-compose.yml](docker-compose.yml) services `db` + `api`; PWA on the host (`next dev` `:3000`). **Staging (Render):** [render.yaml](render.yaml) is apply-ready — `careflow-api` (Docker), `careflow-web` (Node PWA), `careflow-db` (Postgres 16) — but **not applied** in the workspace; there are no live `.onrender.com` URLs. Human applies the Blueprint on branch `dev` (Docker web services cannot be created via Render MCP). Push/`merge` to `dev` then GitHub Actions **CI / test** and **CI / lint** (once those checks exist on `dev`) then Render `autoDeployTrigger: checksPass` — not a GitHub Actions deploy job, not production on `main`. `DEMO_NOTIFY=1`. Secrets: Phantom locally; dashboard `sync: false` after apply. Puml: `deploy`. Apply steps: [ONBOARDING.md](ONBOARDING.md#staging-render).
 
 ## As-built vs target
 
@@ -117,7 +117,7 @@ Journeys J1–J9: [plans/user-journeys.md](plans/user-journeys.md). Target J1 se
 | `symptoms`, `triage`, `bookings`, `hospital`, `notes`, `notify`, `voice` | Planned | Per [team-issues.md](plans/team-issues.md) |
 | Alembic `0001` | Full product DDL | Used by later packages |
 | Compose `db` + `api` | Running locally | Same |
-| Render + Next HTTPS | IaC only | Wave 3 |
+| Render + Next HTTPS | IaC apply-ready (`careflow-api` Docker + `careflow-web` Node + `careflow-db` Postgres 16); **not applied** — no live hosts | Staging from `dev` after dashboard Blueprint apply |
 
 HTTP chapters for live routes: [docs/api/](docs/api/). OpenAPI and Postman artefacts: [docs/api/README.md](docs/api/README.md).
 
@@ -132,4 +132,4 @@ HTTP chapters for live routes: [docs/api/](docs/api/). OpenAPI and Postman artef
 | [docs/product-map/](docs/product-map/) | Domain map (not stack) |
 | [docs/api/](docs/api/) | Live HTTP reference |
 | [docs/research/postgresql-primary-store.md](docs/research/postgresql-primary-store.md) | D-001 ADR |
-| [ONBOARDING.md](ONBOARDING.md) | Local Compose / Phantom |
+| [ONBOARDING.md](ONBOARDING.md) | Local Compose / Phantom / Render staging apply |

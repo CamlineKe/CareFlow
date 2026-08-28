@@ -14,7 +14,7 @@ Installable Next.js 15 PWA for CareFlow: role picker, care-seeker shell, and hos
 | `public/sw.js` | Online-only service worker (does not cache API / recommend) |
 | `next.config.ts` | `output: 'standalone'` |
 
-Dev: `cd frontend && npm install && npm run dev` (port 3000). Optional `NEXT_PUBLIC_API_URL` (default `http://localhost:8000`). Probe the API with `curl localhost:8000/health` → `{"status":"ok"}`. No vendor keys in the PWA. Full run order: [ONBOARDING.md](../ONBOARDING.md).
+Dev: `cd frontend && npm install && npm run dev` (port 3000). Staging (Render) builds this app from the repo root via [`../build.sh`](../build.sh). Optional `NEXT_PUBLIC_API_URL` (default `http://localhost:8000`). Probe the API with `curl localhost:8000/health` → `{"status":"ok"}`. No vendor keys in the PWA. Full run order: [ONBOARDING.md](../ONBOARDING.md).
 
 ## Related
 
