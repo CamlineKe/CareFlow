@@ -17,4 +17,5 @@
 - **Architecture decisions** → `docs/research/` per [research/AGENTS.md](./research/AGENTS.md)
 - **Competitive / vendor research** → `research/` per [research/AGENTS.md](../research/AGENTS.md)
 - **Ephemeral plans** → `~/.cursor/plans/` (not committed)
+- **Pre-design problem / FR / NFR grill** → [`camlinedev/`](../camlinedev/README.md)
 - **Top-level directory blurbs** → `<dir>/README.md` per [directory-readme-practice.md](./directory-readme-practice.md)
