@@ -7,11 +7,11 @@
 | Status | Draft |
 | Owner | camline |
 | Last updated | 2026-08-28 |
-| Related documents | [README.md](README.md), [02-current-state.md](02-current-state.md), [plans/kenya-pretriage.md](../plans/kenya-pretriage.md) |
-| Prerequisites | [README.md](README.md) |
+| Related documents | [camlinedev.md](camlinedev.md), [02-current-state.md](02-current-state.md), [plans/kenya-pretriage.md](../plans/kenya-pretriage.md) |
+| Prerequisites | [camlinedev.md](camlinedev.md) |
 | Revision summary | First extraction from committed plans |
 
-Previous: [README.md](README.md) · Next: [02-current-state.md](02-current-state.md)
+Previous: [camlinedev.md](camlinedev.md) · Next: [02-current-state.md](02-current-state.md)
 
 ## 1. The problem
 

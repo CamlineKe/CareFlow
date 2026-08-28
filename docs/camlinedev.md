@@ -1,17 +1,19 @@
-# camlinedev (`camlinedev/`)
+# Pre-design working notes
 
 Working notes to lock CareFlow's problem, functional requirements, non-functional requirements, and **product domain map** before high-level system design. Not application code. Not a replacement for [plans/](../plans/) until the team promotes a spec.
+
+This file is the former `docs/camlinedev/README.md`, kept as `camlinedev.md` so it does not clash with [docs/README.md](README.md).
 
 | Field | Value |
 |-------|-------|
 | Document type | Working-notes index |
-| Version | 0.3 |
+| Version | 0.4 |
 | Status | Draft |
 | Owner | camline |
-| Last updated | 2026-08-28 |
+| Last updated | 2026-08-29 |
 | Related documents | [plans/kenya-pretriage.md](../plans/kenya-pretriage.md), [plans/product-spec.md](../plans/product-spec.md), [plans/user-journeys.md](../plans/user-journeys.md) |
 | Prerequisites | None |
-| Revision summary | Added [product-map/](product-map/README.md): two sides, queue vs booking, invariants, scenarios |
+| Revision summary | Flattened `docs/camlinedev/` into `docs/`; this file replaces the nested README |
 
 ## Key files
 
@@ -30,13 +32,14 @@ Working notes to lock CareFlow's problem, functional requirements, non-functiona
 - `[Likely]`: reasonable reading of those files, not stated as a hard rule
 - `[Unverified]`: assumed, missing, or contradicted across files
 
-## What this folder is not
+## What these notes are not
 
 - High-level system design, APIs, modules, or stack lock-in
 - A substitute for [research/](../research/) scorecards
 
 ## Related
 
+- [Documentation index](README.md)
 - [Repository root](../README.md)
 - [ONBOARDING.md](../ONBOARDING.md)
 - [Product spec](../plans/product-spec.md)

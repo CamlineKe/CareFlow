@@ -9,7 +9,7 @@
 | Last updated | 2026-08-28 |
 | Related documents | [03-functional-requirements.md](03-functional-requirements.md), [04-non-functional-requirements.md](04-non-functional-requirements.md) |
 | Prerequisites | [01-problem.md](01-problem.md) through [04-non-functional-requirements.md](04-non-functional-requirements.md) |
-| Revision summary | Full Grill me Round 1 written here; `camlinedev/` is tracked in git |
+| Revision summary | Full Grill me Round 1 written here; notes live in `docs/` (index: [camlinedev.md](camlinedev.md)) |
 
 Previous: [04-non-functional-requirements.md](04-non-functional-requirements.md)
 
@@ -29,6 +29,7 @@ Reply with a letter per question, or "all recommended".
 | 2026-08-28 | Path is Grill me, not Work with assumptions | Session |
 | 2026-08-28 | Delivery is a **team**, not solo + agents | Session |
 | 2026-08-28 | Working notes live in committed `camlinedev/` (team will push). Still not a replacement for `plans/` until the grill closes | Session |
+| 2026-08-29 | Working notes flattened from `docs/camlinedev/` into `docs/` (index [camlinedev.md](camlinedev.md)) so they share the docs tree without a second README | Session |
 
 ## 3. Grill me
 
@@ -208,13 +209,13 @@ Recommended: **A.** **C** is out of scope and a different compliance regime.
 
 After the grill, where do locked FRs/NFRs live, and is the product still named CareFlow?
 
-- **A.** Lock in `camlinedev/`; product name stays CareFlow; promote to `plans/` only when the team asks
+- **A.** Lock in `docs/` ([camlinedev.md](camlinedev.md) and numbered notes); product name stays CareFlow; promote to `plans/` only when the team asks
 - **B.** Lock by updating `plans/` in git as the team source of truth
 - **C.** Rename the product
 
-Recommended: **A** for the working notes (now tracked). Do not rename. Promote into `plans/` when the grill closes if the team wants `plans/` to stay the spec root.
+Recommended: **A** for the working notes (now in `docs/`). Do not rename. Promote into `plans/` when the grill closes if the team wants `plans/` to stay the spec root.
 
-Status: **partially answered**. `camlinedev/` is tracked and will be pushed. Product rename is still open unless you confirm CareFlow.
+Status: **partially answered**. Notes live in `docs/` with index [camlinedev.md](camlinedev.md). Product rename is still open unless you confirm CareFlow.
 
 ### 3.2 Round 2 (blocked)
 
