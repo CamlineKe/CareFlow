@@ -1,17 +1,26 @@
 # Backend (`backend/`)
 
-API, domain logic, and persistence for CareFlow. **Persistence is locked:** PostgreSQL + pgvector ([D-001](../research/decision-log.md), [ADR](../docs/research/postgresql-primary-store.md)). Application code is still a placeholder until FastAPI lands per [plans/kenya-pretriage.md](../plans/kenya-pretriage.md).
+FastAPI (Python 3.12) for CareFlow Kenya pretriage. Persistence is **PostgreSQL 16 + pgvector** ([D-001](../research/decision-log.md)). Compose services are `db` + `api`. Routes have **no `/v1` prefix**: `GET /health`, `GET /me`, `GET /facilities/recommend`.
 
 ## Key files
 
 | File | Role |
 |------|------|
-| [../plans/product-schema.md](../plans/product-schema.md) | Product DDL — first Alembic revision when FastAPI lands |
-| *(app package)* | Add a row when the first package, OpenAPI spec, or entrypoint exists |
+| `Dockerfile` | API image; `ENTRYPOINT` is `docker/entrypoint.sh` |
+| `docker/entrypoint.sh` | Boot: Alembic migrate, then `python -m app.seed`, then uvicorn on 8000 |
+| `app/seed.py` | Boot seed module (demo Auth users + DB rows) |
+| `alembic/versions/0001_product_schema.py` | First revision — product DDL |
+| `app/core/` | Settings, DB sessions, error envelope, health |
+| `app/auth/` | Firebase Bearer, `GET /me`, lazy demo UID seed |
+| `app/facilities/` | `GET /facilities/recommend` (J7) |
+| `openapi/openapi.yaml` | Committed OpenAPI; Swagger UI at `http://localhost:8000/docs` |
+| `data/nairobi-facilities.json` | Nairobi seed when `facilities` is empty |
+
+First-time compose, demo accounts, and curl: [ONBOARDING.md](../ONBOARDING.md). Tests: [docs/testing-reference.md](../docs/testing-reference.md).
 
 ## Related
 
-- [docs/api/](../docs/api/) — human + agent HTTP reference (stubs; customize after the API exists)
+- [docs/api/](../docs/api/) — human + agent HTTP reference; Postman JSON (`CareFlow.postman_collection.json`, `CareFlow.postman_environment.json`)
 - [research/ops/](../research/ops/) — stack and vendor research
 - [Repository root](../README.md)
 - [ONBOARDING.md](../ONBOARDING.md)
