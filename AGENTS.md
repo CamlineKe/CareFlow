@@ -49,6 +49,13 @@ When building with subagents, read **agent-and-subagent-workflow.md** before spa
 
 Optional skills.sh guide: `docs/portable-skills.md` (installed when the `portable-skills` module is enabled at init).
 
+## Deploy and voice tooling
+
+| Surface | Use |
+|---------|-----|
+| **Render** Cursor plugin MCP | Deploys, logs, Postgres, env vars. Install with `/add-plugin render` (user scope). Do **not** add a second `render` entry in `mcp.json`. |
+| **ElevenLabs** hosted MCP + skills | Voice agents, TTS, STT (`text-to-speech`, `speech-to-text`, `agents`, `setup-api-key`). Hosted MCP is `https://api.elevenlabs.io/v1/mcp` (OAuth). Product runtime still cascades **ElevenLabs then Pawa** per [plans/kenya-pretriage.md](plans/kenya-pretriage.md). |
+
 ## Conventions
 
 - Application code lives in `backend/` and `frontend/`; research artifacts stay in `research/`

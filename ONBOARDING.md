@@ -40,6 +40,26 @@ Test and lint commands are placeholders until a stack is chosen. See [docs/testi
 
 Add a row when you create a new top-level directory. Keep command details in linked READMEs — do not duplicate them here.
 
+## Cursor plugins and MCP
+
+Agent tooling for deploy and voice. No API keys in `mcp.json`. Both MCPs can create, change, or delete cloud resources — only grant access you are comfortable with.
+
+**Render (plugin, user scope — all projects):**
+
+1. In Cursor chat, run `/add-plugin render`.
+2. Choose **user** scope, then **Authenticate** in the browser.
+3. Verify: ask the agent to run `list_workspaces`.
+
+Do **not** add a `render` entry to `.cursor/mcp.json` or `~/.cursor/mcp.json` — the plugin already provides the hosted MCP (`https://mcp.render.com/mcp`). If the plugin UI fails, add that URL in Customize → MCP with OAuth client id `cursor` instead.
+
+**ElevenLabs (hosted MCP, OAuth):**
+
+1. This repo already lists `elevenlabs` in [`.cursor/mcp.json`](.cursor/mcp.json) (`https://api.elevenlabs.io/v1/mcp`).
+2. In **Customize → MCP**, click **Connect** / **Authenticate** for ElevenLabs and finish the browser OAuth. No API key.
+3. If Cursor also loaded the same server from `~/.cursor/mcp.json`, disable one copy in Customize rather than deleting the repo file (teammates still need it).
+
+**Phantom MCP:** [`.cursor/mcp.json`](.cursor/mcp.json) already includes the `phantom` stdio server. After Cursor reloads MCP, agents can use `phantom_add_secret_interactive` and `phantom_list_secrets` without exposing values in chat.
+
 ## Secrets (Phantom)
 
 This project manages secrets with [Phantom](https://phm.dev) — API keys live in the OS keychain, not in `.env`.
@@ -61,12 +81,10 @@ phantom add VAR_NAME
 
 **Variables used by this project:**
 
-<!-- Fill in each secret this project uses, one per row -->
 | Variable | Purpose |
 |----------|---------|
 | `EXAMPLE_API_KEY` | Replace with real variable name and purpose |
-
-**MCP setup:** Merge `templates/cursor/mcp.phantom.json.snippet` into `.cursor/mcp.json` to enable the `phantom` MCP server in Cursor — this gives agents access to `phantom_add_secret_interactive` and `phantom_list_secrets` without exposing values in chat.
+| `ELEVENLABS_API_KEY` | App runtime for P5 TTS/STT/calls (`phantom add ELEVENLABS_API_KEY`). **Not** required to connect the hosted ElevenLabs MCP (that uses OAuth). |
 
 **`.env` file:** Contains phantom tokens (`phm_...`), not real secrets. Safe to commit if tracked; real values are injected by `phantom exec` at runtime.
 
