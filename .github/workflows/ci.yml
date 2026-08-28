@@ -1,0 +1,66 @@
+# CareFlow CI — Postgres via compose, Alembic, pytest.
+# Never set live Africa’s Talking / Twilio / ElevenLabs / Pawa keys.
+# Never curl those vendors. DEMO_NOTIFY=1 (INV-21, S-34): no live-dial/SMS.
+#
+# Wave 3 lands pytest files. Until then this job is expected to fail at
+# `pytest` if no tests exist yet.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Start compose Postgres (db only)
+        run: |
+          set -euo pipefail
+          docker compose up -d db --wait || true
+          for i in $(seq 1 30); do
+            if docker compose exec -T db pg_isready -U careflow_owner -d careflow; then
+              echo "postgres ready"
+              exit 0
+            fi
+            echo "waiting for postgres ($i)"
+            sleep 2
+          done
+          echo "postgres did not become ready"
+          docker compose logs db
+          exit 1
+
+      - name: Install backend (dev extras)
+        run: pip install -e "./backend[dev]"
+
+      - name: Alembic upgrade head
+        working-directory: backend
+        env:
+          # Local-dev compose roles (not production secrets).
+          DATABASE_ADMIN_URL: postgresql://careflow_owner:careflow_owner@localhost:5432/careflow
+        run: alembic upgrade head
+
+      - name: Pytest
+        working-directory: backend
+        env:
+          DEMO_NOTIFY: "1"
+          DATABASE_URL: postgresql://careflow:careflow@localhost:5432/careflow
+        run: pytest

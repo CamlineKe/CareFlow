@@ -1,0 +1,63 @@
+# CareFlow Render blueprint (IaC only). Do not apply from this pass.
+# NFR-AVAIL-01 is unspecified — this file does not claim production uptime.
+#
+# Values come from the Render dashboard / secret store (sync: false).
+# Do not put secret values in this file.
+#
+# Product Postgres uses two roles (compose local-dev analogue):
+#   DATABASE_URL        app role (careflow) — request traffic, no BYPASSRLS
+#   DATABASE_ADMIN_URL  owner (careflow_owner) — Alembic
+# Render's default connectionString is a single user. After attach, create
+# those roles and paste URLs in the dashboard. Enable extensions vector,
+# cube, and earthdistance (compose init does this locally; dashboard SQL
+# on Render). pgvector is required (D-001).
+#
+# Container listens on 8000 (backend/Dockerfile). Health: GET /health.
+
+services:
+  - type: web
+    name: careflow-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "8000"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: careflow-db
+          property: connectionString
+      - key: DATABASE_ADMIN_URL
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: NEXT_PUBLIC_API_URL
+        sync: false
+      - key: DEMO_NOTIFY
+        sync: false
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
+      - key: AFRICAS_TALKING_USERNAME
+        sync: false
+      - key: AFRICAS_TALKING_API_KEY
+        sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: PAWA_AI_API_KEY
+        sync: false
+
+databases:
+  - name: careflow-db
+    databaseName: careflow
+    postgresMajorVersion: "16"
+    # Attach in dashboard if this Blueprint is not applied.
+    # Enable pgvector (vector) + cube + earthdistance on the instance.
