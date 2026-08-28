@@ -90,7 +90,7 @@ Bearer **Firebase ID token** on protected routes. Role (`patient` | `hospital_st
 
 **Routine** ([INV-05](docs/product-map/05-invariants.md)–06, 08): utterance → catalog (`POST /symptoms/map`) → **rules** pick `keph_min` (embeddings never pick the hospital) → `keph_level >= keph_min` → lowest `wait_count` → nearest.
 
-**Red flag** ([INV-07](docs/product-map/05-invariants.md)): ignore wait; nearest KEPH 4+; never a quieter distant Level 2. Recommend today is routine-only.
+**Red flag** ([INV-07](docs/product-map/05-invariants.md)): ignore wait; nearest KEPH 4+; never a quieter distant Level 2. **Recommend today is routine or red-flag** via `red_flag` on `GET /facilities/recommend`.
 
 **Notify** ([INV-13](docs/product-map/05-invariants.md)): voice/STT/TTS/SMS/call failure must not block booking — fail closed to text + SMS / `DEMO_NOTIFY` log.
 
@@ -106,7 +106,7 @@ Journeys J1–J9: [plans/user-journeys.md](plans/user-journeys.md). Target J1 se
 |---------|----------|--------|
 | `GET /health` | Live, no DB ping | Same |
 | `GET /me` | Live; Firebase Admin + demo UIDs | Same |
-| `GET /facilities/recommend` | Live; Nairobi seed, wait-then-distance, Kenya bbox; **no** red-flag rank | + KMHFR sync; red-flag nearest KEPH 4+ |
+| `GET /facilities/recommend` | Live; Nairobi seed, wait-then-distance, Kenya bbox; **`red_flag=true`** nearest KEPH 4+ | + KMHFR sync |
 | `POST /symptoms/map` | Not in `main.py` | P2 |
 | `POST /bookings`, hospital queue / wait / arrived / no-show | Not in `main.py` | P2 / P4 |
 | `POST /voice/stt`, `/voice/tts`, notify, notes | Not in `main.py` | P5 |
