@@ -1,0 +1,133 @@
+{
+  "info": {
+    "_postman_id": "da01d968-f6a4-4c44-95f6-daeba49234ca",
+    "name": "CareFlow",
+    "description": "Kenya pretriage API. No `/v1` prefix. Repo JSON only — do not sync to Postman Cloud.\n\nSet `baseUrl` (default `http://localhost:8000`) and, for Get me, paste a Firebase ID token into `firebaseIdToken`. Never store a real token in git.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "health",
+      "item": [
+        {
+          "name": "Get health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "operationId: `getHealth`. Liveness probe; no authentication."
+          }
+        }
+      ]
+    },
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "Get me",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{firebaseIdToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["me"]
+            },
+            "description": "operationId: `getMe`. Signed-in identity for the Bearer Firebase ID token. Paste a token into `firebaseIdToken`; never commit a real token."
+          }
+        }
+      ]
+    },
+    {
+      "name": "facilities",
+      "item": [
+        {
+          "name": "Recommend facilities",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/facilities/recommend?lat=-1.2921&lng=36.8219&keph_min=2",
+              "host": ["{{baseUrl}}"],
+              "path": ["facilities", "recommend"],
+              "query": [
+                {
+                  "key": "lat",
+                  "value": "-1.2921"
+                },
+                {
+                  "key": "lng",
+                  "value": "36.8219"
+                },
+                {
+                  "key": "keph_min",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "operationId: `recommendFacilities`. Routine (J7) ranking for a point inside Kenya. Query defaults are Nairobi."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "firebaseIdToken",
+      "value": ""
+    }
+  ]
+}
