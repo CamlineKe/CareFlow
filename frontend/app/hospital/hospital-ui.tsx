@@ -11,10 +11,10 @@ export function HospitalHeader({
   right?: ReactNode;
 }) {
   return (
-    <header className="flex items-center justify-between bg-cf-desk-primary px-5 pb-4 pt-5 text-white shadow-sm">
+    <header className="flex items-center justify-between bg-[#1e63b8] px-5 pb-4 pt-5 text-white shadow-sm">
       <div>
         <p className="text-[17px] font-semibold tracking-tight">{title}</p>
-        <p className="mt-0.5 text-sm text-cf-on-primary-muted">{subtitle}</p>
+        <p className="mt-0.5 text-xs text-white/70">{subtitle}</p>
       </div>
       {right}
     </header>
@@ -23,7 +23,7 @@ export function HospitalHeader({
 
 export function HospitalNav() {
   return (
-    <nav className="flex flex-wrap items-center gap-3 text-sm text-cf-on-primary-muted">
+    <nav className="flex flex-wrap items-center gap-3 text-xs text-white/80">
       <Link href="/hospital" className="hover:text-white">
         Station
       </Link>
@@ -42,7 +42,7 @@ export function HospitalNav() {
 
 export function SectionLabel({ children }: { children: ReactNode }) {
   return (
-    <p className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-cf-desk-muted">
+    <p className="mb-2 text-xs font-medium uppercase tracking-[0.08em] text-[#8fa0af]">
       {children}
     </p>
   );
@@ -101,22 +101,19 @@ export function Btn({
   type?: "button" | "submit";
 }) {
   const variants = {
-    primary:
-      "border border-cf-desk-primary bg-cf-desk-primary text-white hover:bg-cf-desk-primary-hover",
+    primary: "bg-[#1e63b8] text-white border border-[#1e63b8] hover:bg-[#154a8c]",
     ghost:
-      "border border-cf-desk-line-strong bg-transparent text-cf-desk-ink hover:bg-cf-desk-well",
-    danger: "border border-[#c63a4d] bg-[#c63a4d] text-white hover:brightness-110",
+      "bg-transparent text-[#16212c] border border-[#c3ceda] hover:bg-[#eaf1f8]",
+    danger: "bg-[#c63a4d] text-white border border-[#c63a4d] hover:brightness-110",
   };
-  const disabledStyles =
-    "cursor-not-allowed border-cf-disabled-bg bg-cf-disabled-bg text-cf-disabled-text hover:bg-cf-disabled-bg";
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`min-h-11 rounded-lg px-3 text-sm font-medium transition-colors ${
-        disabled ? disabledStyles : `${variants[variant]} ${className}`
-      }`}
+      className={`min-h-11 rounded-lg px-3 text-sm font-medium transition-colors ${variants[variant]} ${
+        disabled ? "cursor-not-allowed opacity-40" : ""
+      } ${className}`}
     >
       {children}
     </button>

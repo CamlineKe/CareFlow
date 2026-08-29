@@ -255,7 +255,7 @@ export function StationDesk() {
       ) : null}
 
       {busy === "load" && !queue ? (
-        <p className="px-5 py-10 text-sm text-cf-desk-muted">Loading station…</p>
+        <p className="px-5 py-10 text-sm text-[#8fa0af]">Loading station…</p>
       ) : null}
 
       {queue ? (
@@ -268,7 +268,7 @@ export function StationDesk() {
                 <p className="text-xs font-medium text-[#16212c]">
                   Unassigned · {unassigned.length}
                 </p>
-                <p className="mt-0.5 text-xs text-cf-desk-muted">
+                <p className="mt-0.5 text-xs text-[#8fa0af]">
                   Assign a department before calling.
                 </p>
               </div>
@@ -280,11 +280,11 @@ export function StationDesk() {
                 return (
                   <div key={dept.id} className="mb-4">
                     <div className="mb-1 flex items-center gap-1.5">
-                      <span className="text-xs text-cf-desk-muted">{dept.name}</span>
+                      <span className="text-xs text-[#8fa0af]">{dept.name}</span>
                       <Pill color={queueKindColor(dept.queue_kind)}>
                         {queueKindLabel(dept.queue_kind)}
                       </Pill>
-                      <span className="text-xs text-cf-desk-muted">
+                      <span className="text-xs text-[#8fa0af]">
                         {waiting.length}
                       </span>
                     </div>
@@ -316,7 +316,7 @@ export function StationDesk() {
                                 {servingCode}
                               </span>
                             ) : (
-                              <span className="text-cf-desk-muted">idle</span>
+                              <span className="text-[#8fa0af]">idle</span>
                             )}
                           </button>
                         );
@@ -330,14 +330,14 @@ export function StationDesk() {
 
           <main className="min-w-0 flex-1">
             {!selectedStation ? (
-              <div className="flex h-full items-center justify-center py-24 text-sm text-cf-desk-muted">
+              <div className="flex h-full items-center justify-center py-24 text-sm text-[#8fa0af]">
                 Select a station on the left to open its queue screen.
               </div>
             ) : (
               <div>
                 <div className="mb-4 flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-cf-desk-muted">
+                    <p className="text-xs text-[#8fa0af]">
                       {queue.facility.name} · {selectedDept?.name}
                     </p>
                     <h1 className="text-xl font-semibold tracking-tight">
@@ -504,7 +504,7 @@ export function StationDesk() {
                       )}
                     </div>
                   ) : (
-                    <p className="text-sm text-cf-desk-muted">Station idle</p>
+                    <p className="text-sm text-[#8fa0af]">Station idle</p>
                   )}
                 </Card>
 
@@ -520,7 +520,7 @@ export function StationDesk() {
                   {selectedDept?.name} queue — {deptQueue.length} waiting
                 </SectionLabel>
                 {deptQueue.length === 0 ? (
-                  <p className="py-6 text-center text-xs text-cf-desk-muted">
+                  <p className="py-6 text-center text-xs text-[#8fa0af]">
                     Queue empty
                   </p>
                 ) : (
@@ -530,7 +530,7 @@ export function StationDesk() {
                         key={booking.id}
                         className="flex items-center gap-2 rounded-lg border border-[#dce4ec] bg-white px-3 py-2"
                       >
-                        <span className="w-5 text-xs text-cf-desk-muted">
+                        <span className="w-5 text-xs text-[#8fa0af]">
                           {index + 1}
                         </span>
                         <span className="w-14 font-mono text-xs">
@@ -540,14 +540,14 @@ export function StationDesk() {
                           <p className="truncate text-sm font-medium">
                             {displayName(booking)}
                           </p>
-                          <p className="truncate text-xs text-cf-desk-muted">
+                          <p className="truncate text-xs text-[#8fa0af]">
                             {symptomSummary(booking)}
                           </p>
                         </div>
                         {booking.red_flag_applied ? (
                           <Pill color="#c63a4d">Red flag</Pill>
                         ) : null}
-                        <span className="w-10 text-right text-xs text-cf-desk-muted">
+                        <span className="w-10 text-right text-xs text-[#8fa0af]">
                           {minutesWaiting(booking.created_at)}
                         </span>
                       </div>
@@ -559,7 +559,7 @@ export function StationDesk() {
                   <SectionLabel>This station&apos;s recent calls</SectionLabel>
                   <div className="flex flex-wrap gap-2">
                     {recentCalls.length === 0 ? (
-                      <span className="text-xs text-cf-desk-muted">
+                      <span className="text-xs text-[#8fa0af]">
                         Nothing called yet.
                       </span>
                     ) : (

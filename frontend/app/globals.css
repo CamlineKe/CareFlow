@@ -6,25 +6,10 @@
   --color-cf-card: #ffffff;
   --color-cf-teal: #0f5c4c;
   --color-cf-teal-hover: #0a3d33;
-  --color-cf-teal-wash: #e7f3ef;
   --color-cf-muted: #3d524c;
-  --color-cf-placeholder: #5a6e68;
   --color-cf-line: #c5d4cf;
-  --color-cf-line-strong: #6b8279;
   --color-cf-emergency: #9b1c1c;
   --color-cf-emergency-bg: #fde8e8;
-  --color-cf-disabled-bg: #d3ddd9;
-  --color-cf-disabled-text: #3d524c;
-
-  --color-cf-desk-ink: #16212c;
-  --color-cf-desk-bg: #f5f8fb;
-  --color-cf-desk-well: #eaf1f8;
-  --color-cf-desk-line: #dce4ec;
-  --color-cf-desk-line-strong: #6e7f8d;
-  --color-cf-desk-muted: #4a5c68;
-  --color-cf-desk-primary: #1e63b8;
-  --color-cf-desk-primary-hover: #154a8c;
-  --color-cf-on-primary-muted: #e8eef6;
 }
 
 html {

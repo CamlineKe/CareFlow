@@ -132,7 +132,7 @@ export function PatientHome() {
 
   return (
     <AppShell width="phone">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-col gap-3">
         <BackToRolePicker label={t("backToRolePicker", locale)} />
         <LocaleToggle />
       </div>

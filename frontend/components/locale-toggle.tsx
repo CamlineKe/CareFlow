@@ -37,13 +37,13 @@ export function LocaleToggle() {
     <div
       role="group"
       aria-label={t("localeAria", locale)}
-      className={ui.localeTrack}
+      className="flex gap-2"
     >
       <button
         type="button"
         lang="en"
         aria-pressed={locale === "en"}
-        className={locale === "en" ? ui.localeOptionOn : ui.localeOptionOff}
+        className={`flex-1 ${locale === "en" ? ui.primaryBtnCompact : ui.secondaryBtnCompact}`}
         onClick={() => select("en")}
       >
         {t("localeEn", locale)}
@@ -52,7 +52,7 @@ export function LocaleToggle() {
         type="button"
         lang="sw"
         aria-pressed={locale === "sw"}
-        className={locale === "sw" ? ui.localeOptionOn : ui.localeOptionOff}
+        className={`flex-1 ${locale === "sw" ? ui.primaryBtnCompact : ui.secondaryBtnCompact}`}
         onClick={() => select("sw")}
       >
         {t("localeSw", locale)}

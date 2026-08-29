@@ -121,14 +121,14 @@ export function RecommendList({
                       href={mapUrl(item.lat, item.lng)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={ui.primaryBtn}
+                      className={ui.secondaryBtn}
                     >
                       {t("openMap", locale)}
                     </a>
                     <button
                       type="button"
                       disabled
-                      className={ui.disabledBtn}
+                      className={`${ui.primaryBtn} cursor-not-allowed opacity-50`}
                       aria-describedby="book-disabled-hint"
                     >
                       {t("bookComingSoon", locale)}

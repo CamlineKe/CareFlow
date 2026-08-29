@@ -9,9 +9,7 @@ export default function HospitalNotesPage() {
     <Suspense
       fallback={
         <AppShell width="desk">
-          <div className="mb-6">
-            <BackToRolePicker />
-          </div>
+          <BackToRolePicker />
           <p className="mt-6 text-sm text-cf-muted">Loading notes…</p>
         </AppShell>
       }
