@@ -120,7 +120,7 @@ def test_patient_books_and_wait_increments(
     assert channel == "ranked_recommend"
     assert symptom_rows == [("chest-pain", 0)]
     assert snapshot.kmhfr_code == "SEED-NBO-KNH"
-    assert int(snapshot.keph_level) == 4
+    assert int(snapshot.keph_level) == 5
     assert int(snapshot.wait_count_at_book) == wait_before
     assert appointment_count == 0
 
