@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 
 from app.auth.deps import CurrentUser
@@ -23,13 +23,13 @@ router = APIRouter(prefix="/hospital/bookings", tags=["notes"])
     operation_id="createBookingNote",
     summary="Add a clinical note to a booking (staff, same facility)",
     responses={
-        403: {"model": ErrorEnvelope, "description": "Not hospital staff or wrong facility."},
+        403: {"model": ErrorEnvelope, "description": "Not hospital staff."},
         404: {"model": ErrorEnvelope, "description": "Booking not found at this facility."},
-        422: {"model": ErrorEnvelope, "description": "Empty note payload."},
+        422: {"model": ErrorEnvelope, "description": "Request validation failed."},
     },
 )
 def post_booking_note(
-    booking_id: int,
+    booking_id: Annotated[int, Path(ge=1)],
     body: CreateNoteRequest,
     staff: Annotated[CurrentUser, Depends(require_hospital_staff)],
     session: Annotated[Session, Depends(get_db)],
@@ -71,7 +71,7 @@ def post_booking_note(
     },
 )
 def get_booking_notes(
-    booking_id: int,
+    booking_id: Annotated[int, Path(ge=1)],
     staff: Annotated[CurrentUser, Depends(require_hospital_staff)],
     session: Annotated[Session, Depends(get_db)],
 ) -> NoteListResponse:

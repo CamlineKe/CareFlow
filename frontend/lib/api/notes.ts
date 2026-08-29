@@ -1,10 +1,5 @@
-/**
- * Notes API client (P5). Uses fetch + Firebase ID token.
- * When P3 lands `lib/api/client.ts`, switch imports to that wrapper.
- */
-
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "http://localhost:8000";
+/** Notes API client (P5). Authentication is handled by the shared client. */
+import { apiFetch } from "./client";
 
 export type NoteImageInput = {
   image_url: string;
@@ -37,36 +32,11 @@ export type Note = {
   images: NoteImage[];
 };
 
-async function apiFetch<T>(
-  path: string,
-  idToken: string,
-  init?: RequestInit,
-): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...init,
-    headers: {
-      Authorization: `Bearer ${idToken}`,
-      "Content-Type": "application/json",
-      ...(init?.headers ?? {}),
-    },
-  });
-  const body = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const message =
-      typeof body?.error?.message === "string"
-        ? body.error.message
-        : "Request failed.";
-    throw new Error(message);
-  }
-  return body as T;
-}
-
 export async function createBookingNote(
   bookingId: number,
-  idToken: string,
   payload: CreateNotePayload,
 ): Promise<Note> {
-  return apiFetch<Note>(`/hospital/bookings/${bookingId}/notes`, idToken, {
+  return apiFetch<Note>(`/hospital/bookings/${bookingId}/notes`, {
     method: "POST",
     body: JSON.stringify(payload),
   });
@@ -74,10 +44,8 @@ export async function createBookingNote(
 
 export async function listBookingNotes(
   bookingId: number,
-  idToken: string,
 ): Promise<{ notes: Note[] }> {
   return apiFetch<{ notes: Note[] }>(
     `/hospital/bookings/${bookingId}/notes`,
-    idToken,
   );
 }

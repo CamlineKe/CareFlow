@@ -2,78 +2,166 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { FormEvent } from "react";
 
 import { AppShell, BackToRolePicker } from "@/components/app-shell";
-import { getFirebaseAuth } from "@/lib/firebase";
 import {
   createBookingNote,
   listBookingNotes,
   type Note,
 } from "@/lib/api/notes";
+import { subscribeAuth } from "@/lib/auth";
+
+const BODY_MAX_LENGTH = 10_000;
+const TRANSCRIPT_MAX_LENGTH = 20_000;
+const IMAGE_URL_MAX_LENGTH = 2_083;
+
+function parseBookingId(value: string | null): number | null {
+  if (!value || !/^[1-9]\d*$/.test(value)) {
+    return null;
+  }
+  const bookingId = Number(value);
+  return Number.isSafeInteger(bookingId) ? bookingId : null;
+}
+
+function getSafeHttpsUrl(value: string): string | null {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" ? url.href : null;
+  } catch {
+    return null;
+  }
+}
 
 export function HospitalNotesContent() {
   const searchParams = useSearchParams();
-  const bookingIdParam = searchParams.get("bookingId");
-  const bookingId = bookingIdParam ? Number(bookingIdParam) : NaN;
+  const bookingId = parseBookingId(searchParams.get("booking_id"));
 
   const [notes, setNotes] = useState<Note[]>([]);
   const [bodyText, setBodyText] = useState("");
   const [audioTranscript, setAudioTranscript] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [status, setStatus] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [isLoadingNotes, setIsLoadingNotes] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [authUid, setAuthUid] = useState<string | null | undefined>(undefined);
+  const submissionInFlight = useRef(false);
+  const loadRequestId = useRef(0);
+  const activeBookingId = useRef<number | null>(bookingId);
+  const activeAuthUid = useRef<string | null | undefined>(authUid);
+  activeBookingId.current = bookingId;
+  activeAuthUid.current = authUid;
 
-  const loadNotes = useCallback(async () => {
-    if (!Number.isFinite(bookingId)) return;
-    const user = getFirebaseAuth().currentUser;
-    if (!user) {
+  const loadNotes = useCallback(async (successMessage: string | null = null) => {
+    const requestId = ++loadRequestId.current;
+    setNotes([]);
+    if (bookingId === null) {
+      setIsLoadingNotes(false);
+      return;
+    }
+    if (authUid === undefined) {
+      setIsLoadingNotes(true);
+      return;
+    }
+    if (authUid === null) {
+      setIsLoadingNotes(false);
       setStatus("Sign in as hospital staff to view notes.");
       return;
     }
-    const token = await user.getIdToken();
-    const data = await listBookingNotes(bookingId, token);
-    setNotes(data.notes);
-  }, [bookingId]);
+
+    setIsLoadingNotes(true);
+    try {
+      const data = await listBookingNotes(bookingId);
+      if (
+        requestId !== loadRequestId.current ||
+        activeBookingId.current !== bookingId
+      ) {
+        return;
+      }
+      setNotes(data.notes);
+      setStatus(successMessage);
+    } catch (err: unknown) {
+      if (
+        requestId === loadRequestId.current &&
+        activeBookingId.current === bookingId
+      ) {
+        setStatus(err instanceof Error ? err.message : "Could not load notes.");
+      }
+    } finally {
+      if (
+        requestId === loadRequestId.current &&
+        activeBookingId.current === bookingId
+      ) {
+        setIsLoadingNotes(false);
+      }
+    }
+  }, [authUid, bookingId]);
 
   useEffect(() => {
-    loadNotes().catch((err: unknown) => {
-      setStatus(err instanceof Error ? err.message : "Could not load notes.");
-    });
+    return subscribeAuth(setAuthUid);
+  }, []);
+
+  useEffect(() => {
+    void loadNotes();
   }, [loadNotes]);
+
+  useEffect(() => {
+    setBodyText("");
+    setAudioTranscript("");
+    setImageUrl("");
+  }, [authUid, bookingId]);
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
-    if (!Number.isFinite(bookingId)) {
-      setStatus("Add ?bookingId= to the URL from the hospital desk.");
+    if (submissionInFlight.current) return;
+    if (bookingId === null) {
+      setStatus("Open a valid booking from the hospital desk.");
       return;
     }
-    const user = getFirebaseAuth().currentUser;
-    if (!user) {
+    if (!authUid) {
       setStatus("Sign in as hospital staff to add notes.");
       return;
     }
+    const trimmedImageUrl = imageUrl.trim();
+    if (trimmedImageUrl && !getSafeHttpsUrl(trimmedImageUrl)) {
+      setStatus("Photo URL must be a valid HTTPS URL.");
+      return;
+    }
 
-    setLoading(true);
+    submissionInFlight.current = true;
+    setIsSubmitting(true);
     setStatus(null);
+    const submittedBookingId = bookingId;
+    const submittedAuthUid = authUid;
     try {
-      const token = await user.getIdToken();
-      await createBookingNote(bookingId, token, {
+      await createBookingNote(submittedBookingId, {
         body_text: bodyText || null,
         audio_transcript: audioTranscript || null,
-        images: imageUrl
-          ? [{ image_url: imageUrl, sort_order: 0 }]
+        images: trimmedImageUrl
+          ? [{ image_url: trimmedImageUrl, sort_order: 0 }]
           : undefined,
       });
+      if (
+        activeBookingId.current !== submittedBookingId ||
+        activeAuthUid.current !== submittedAuthUid
+      ) {
+        return;
+      }
       setBodyText("");
       setAudioTranscript("");
       setImageUrl("");
-      await loadNotes();
-      setStatus("Note saved.");
+      await loadNotes("Note saved.");
     } catch (err: unknown) {
-      setStatus(err instanceof Error ? err.message : "Could not save note.");
+      if (
+        activeBookingId.current === submittedBookingId &&
+        activeAuthUid.current === submittedAuthUid
+      ) {
+        setStatus(err instanceof Error ? err.message : "Could not save note.");
+      }
     } finally {
-      setLoading(false);
+      submissionInFlight.current = false;
+      setIsSubmitting(false);
     }
   }
 
@@ -95,9 +183,10 @@ export function HospitalNotesContent() {
         </p>
       </header>
 
-      {!Number.isFinite(bookingId) ? (
+      {bookingId === null ? (
         <p className="mt-6 text-sm text-cf-muted" role="status">
-          Open this page with <code>?bookingId=</code> from a booking on the desk.
+          Open this page from a booking on the hospital desk. A positive integer{" "}
+          <code>booking_id</code> is required.
         </p>
       ) : (
         <>
@@ -110,6 +199,8 @@ export function HospitalNotesContent() {
                 id="body-text"
                 className="mt-1 w-full rounded-lg border border-cf-line bg-cf-card px-3 py-2 text-sm"
                 rows={4}
+                maxLength={BODY_MAX_LENGTH}
+                disabled={isSubmitting}
                 value={bodyText}
                 onChange={(e) => setBodyText(e.target.value)}
               />
@@ -117,16 +208,23 @@ export function HospitalNotesContent() {
 
             <div>
               <label htmlFor="audio-transcript" className="block text-sm font-medium">
-                Voice transcript
+                Transcript
               </label>
               <textarea
                 id="audio-transcript"
                 className="mt-1 w-full rounded-lg border border-cf-line bg-cf-card px-3 py-2 text-sm"
                 rows={3}
+                maxLength={TRANSCRIPT_MAX_LENGTH}
+                aria-describedby="transcript-help"
+                disabled={isSubmitting}
                 value={audioTranscript}
                 onChange={(e) => setAudioTranscript(e.target.value)}
-                placeholder="Browser speech-to-text or dictated summary"
+                placeholder="Paste or type a transcript"
               />
+              <p id="transcript-help" className="mt-1 text-xs text-cf-muted">
+                Manual metadata entry only. Browser audio capture and transcription
+                are not implemented.
+              </p>
             </div>
 
             <div>
@@ -136,19 +234,28 @@ export function HospitalNotesContent() {
               <input
                 id="image-url"
                 type="url"
+                inputMode="url"
+                maxLength={IMAGE_URL_MAX_LENGTH}
+                pattern="https://.*"
+                aria-describedby="image-url-help"
+                disabled={isSubmitting}
                 className="mt-1 w-full rounded-lg border border-cf-line bg-cf-card px-3 py-2 text-sm"
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
                 placeholder="https://…"
               />
+              <p id="image-url-help" className="mt-1 text-xs text-cf-muted">
+                Paste an existing HTTPS image URL. Browser photo capture, upload,
+                and OCR are not implemented.
+              </p>
             </div>
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={isSubmitting}
               className="rounded-lg bg-cf-teal px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
             >
-              {loading ? "Saving…" : "Save note"}
+              {isSubmitting ? "Saving…" : "Save note"}
             </button>
           </form>
 
@@ -156,7 +263,11 @@ export function HospitalNotesContent() {
             <h2 id="notes-list-heading" className="text-base font-semibold">
               Notes for booking #{bookingId}
             </h2>
-            {notes.length === 0 ? (
+            {isLoadingNotes ? (
+              <p className="mt-2 text-sm text-cf-muted" role="status">
+                Loading notes…
+              </p>
+            ) : notes.length === 0 ? (
               <p className="mt-2 text-sm text-cf-muted">No notes yet.</p>
             ) : (
               <ul className="mt-4 space-y-4">
@@ -175,10 +286,21 @@ export function HospitalNotesContent() {
                       <ul className="mt-2 list-disc pl-5">
                         {note.images.map((img) => (
                           <li key={img.id}>
-                            <a href={img.image_url} className="text-cf-teal underline">
-                              Photo
-                            </a>
-                            {img.ocr_text ? ` — ${img.ocr_text}` : null}
+                            {getSafeHttpsUrl(img.image_url) ? (
+                              <a
+                                href={getSafeHttpsUrl(img.image_url) ?? undefined}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-cf-teal underline"
+                              >
+                                Photo (opens in a new tab)
+                              </a>
+                            ) : (
+                              <span className="text-cf-muted">
+                                Photo URL unavailable
+                              </span>
+                            )}
+                            {img.ocr_text ? `: ${img.ocr_text}` : null}
                           </li>
                         ))}
                       </ul>

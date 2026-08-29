@@ -74,7 +74,7 @@ def create_note(
             ),
             {
                 "note_id": note_row["id"],
-                "image_url": image.image_url,
+                "image_url": str(image.image_url),
                 "ocr_text": image.ocr_text,
                 "sort_order": image.sort_order,
             },
