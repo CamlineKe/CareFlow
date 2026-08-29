@@ -1,4 +1,4 @@
-"""Insert canonical symptom rows and Wave 1 hash synonym vectors when empty."""
+"""Insert missing canonical symptom rows and Wave 1 hash synonym vectors."""
 
 from __future__ import annotations
 
@@ -15,6 +15,7 @@ _INSERT_SYMPTOM = text(
     ) VALUES (
       :slug, :keph_min, :red_flag, :icd11_uri, :ciel_concept_id, TRUE
     )
+    ON CONFLICT (slug) DO NOTHING
     """
 )
 
@@ -29,6 +30,7 @@ _INSERT_SYNONYM = text(
       CAST(:embedding AS vector),
       :embedding_model
     )
+    ON CONFLICT (symptom_id, lang, phrase) DO NOTHING
     """
 )
 
@@ -44,22 +46,29 @@ def _row(symptom: Symptom) -> dict[str, object]:
 
 
 def ensure_symptom_catalog(session: Session) -> None:
-    """INSERT catalog rows when the table is empty. No-op if any row exists."""
-    count = session.execute(text("SELECT COUNT(*) FROM symptoms")).scalar_one()
-    if count > 0:
-        return
-    rows = [_row(item) for item in load_catalog()]
+    """Insert missing catalog rows without overwriting runtime catalog changes."""
+    existing = set(session.execute(text("SELECT slug FROM symptoms")).scalars())
+    rows = [_row(item) for item in load_catalog() if item.slug not in existing]
     if not rows:
         return
     session.execute(_INSERT_SYMPTOM, rows)
 
 
 def ensure_synonym_embeddings(session: Session) -> None:
-    """INSERT hash vectors for catalog phrases when synonym table is empty."""
-    count = session.execute(text("SELECT COUNT(*) FROM symptom_synonyms")).scalar_one()
-    if count > 0:
-        return
+    """Insert missing hash vectors without replacing another embedding model."""
     ensure_symptom_catalog(session)
+    existing = {
+        (str(row.slug), str(row.lang), str(row.phrase))
+        for row in session.execute(
+            text(
+                """
+                SELECT s.slug, sy.lang, sy.phrase
+                FROM symptom_synonyms sy
+                JOIN symptoms s ON s.id = sy.symptom_id
+                """
+            )
+        )
+    }
     ids = {
         str(row.slug): int(row.id)
         for row in session.execute(text("SELECT id, slug FROM symptoms")).mappings()
@@ -70,6 +79,8 @@ def ensure_synonym_embeddings(session: Session) -> None:
         if symptom_id is None:
             continue
         for synonym in symptom.synonyms:
+            if (symptom.slug, synonym.lang, synonym.phrase) in existing:
+                continue
             rows.append(
                 {
                     "symptom_id": symptom_id,

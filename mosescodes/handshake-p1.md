@@ -89,7 +89,11 @@ Replace the `me_get = ...` block with:
 
 P1 owns this file. Domain chapters [symptoms.md](../docs/api/symptoms.md) and [bookings.md](../docs/api/bookings.md) already exist.
 
-**Related material** domain-chapters bullet: add `[symptoms](symptoms.md), [bookings](bookings.md)`.
+**Related material** domain-chapters bullet: add:
+
+```markdown
+[symptoms](symptoms.md), [bookings](bookings.md)
+```
 
 **Route map:** drop "Three live routes only." Add rows:
 
@@ -116,6 +120,10 @@ python -m app.export_openapi
 ```
 
 P2 does not hand-edit `backend/openapi/openapi.yaml`.
+
+## Deferred schema handshake: booking retries
+
+`POST /bookings` does not yet have a durable idempotency key. A mobile/network retry can therefore create a second booking and increment `wait_count` again. Resolving this requires a P1-owned Alembic change and an agreed request-header contract; it is not safe to simulate with process-local state. Track this before treating booking retries as production-safe.
 
 ## Do not
 

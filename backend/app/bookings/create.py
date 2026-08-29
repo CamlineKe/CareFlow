@@ -10,7 +10,6 @@ from dataclasses import dataclass
 from sqlalchemy import bindparam, text
 from sqlalchemy.orm import Session
 
-from app.symptoms.catalog import load_catalog
 from app.symptoms.seed import ensure_symptom_catalog
 from app.triage.rules import rules_from_symptoms
 
@@ -89,8 +88,20 @@ class FacilityUnavailable(LookupError):
     """Facility missing or not operational."""
 
 
+class FacilityBelowKeph(ValueError):
+    """Selected facility is below the symptom-derived KEPH floor."""
+
+
 class UnknownSymptoms(ValueError):
     """One or more catalog slugs do not exist."""
+
+
+@dataclass(frozen=True, slots=True)
+class BookingSymptom:
+    id: int
+    slug: str
+    keph_min: int
+    red_flag: bool
 
 
 @dataclass(frozen=True, slots=True)
@@ -137,17 +148,28 @@ def create_instant_booking(
     if facility is None:
         raise FacilityUnavailable(f"facility {facility_id} is not bookable")
 
-    found = list(
-        session.execute(_SYMPTOMS_BY_SLUG, {"slugs": slugs}).mappings()
+    found = (
+        BookingSymptom(
+            id=int(row["id"]),
+            slug=str(row["slug"]),
+            keph_min=int(row["keph_min"]),
+            red_flag=bool(row["red_flag"]),
+        )
+        for row in session.execute(_SYMPTOMS_BY_SLUG, {"slugs": slugs}).mappings()
     )
-    by_slug = {str(row["slug"]): row for row in found}
+    by_slug = {row.slug: row for row in found}
     missing = [slug for slug in slugs if slug not in by_slug]
     if missing:
         raise UnknownSymptoms(f"unknown symptom_id: {', '.join(missing)}")
 
-    catalog = {row.slug: row for row in load_catalog()}
-    selected = tuple(catalog[slug] for slug in slugs if slug in catalog)
+    selected = tuple(by_slug[slug] for slug in slugs)
     keph_min, red_flag = rules_from_symptoms(selected)
+    facility_keph = int(facility["keph_level"])
+    if facility_keph < keph_min:
+        raise FacilityBelowKeph(
+            f"facility {facility_id} is KEPH {facility_keph}; "
+            f"symptoms require KEPH {keph_min} or above"
+        )
 
     wait_at_book = int(facility["wait_count"])
     booking_id = int(
@@ -171,7 +193,7 @@ def create_instant_booking(
             _INSERT_SYMPTOM,
             {
                 "booking_id": booking_id,
-                "symptom_id": int(row["id"]),
+                "symptom_id": row.id,
                 "map_score": score,
                 "sort_order": order,
             },

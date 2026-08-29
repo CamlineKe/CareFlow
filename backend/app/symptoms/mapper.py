@@ -7,14 +7,14 @@ from dataclasses import dataclass
 from sqlalchemy import bindparam, text
 from sqlalchemy.orm import Session
 
-from app.symptoms.catalog import SYNONYM_LANGS, Symptom, load_catalog
+from app.symptoms.catalog import SYNONYM_LANGS
 from app.symptoms.embeddings import (
     CONFIDENCE_FLOOR,
     EMBEDDING_MODEL,
     embed_phrase,
     vector_literal,
 )
-from app.symptoms.seed import ensure_symptom_catalog, ensure_synonym_embeddings
+from app.symptoms.seed import ensure_synonym_embeddings
 from app.triage.rules import rules_from_symptoms
 
 _MAP_SQL = text(
@@ -61,14 +61,9 @@ def _search_langs(lang: str) -> tuple[str, ...]:
     return (lang, "en", "sw")
 
 
-def _catalog_by_slug() -> dict[str, Symptom]:
-    return {row.slug: row for row in load_catalog()}
-
-
 def map_utterance(session: Session, *, text_value: str, lang: str) -> MapResult:
     if lang not in SYNONYM_LANGS:
         raise ValueError(f"unsupported lang: {lang}")
-    ensure_symptom_catalog(session)
     ensure_synonym_embeddings(session)
 
     models = {
@@ -112,7 +107,5 @@ def map_utterance(session: Session, *, text_value: str, lang: str) -> MapResult:
     if not ordered:
         return MapResult(matches=(), keph_min=None, red_flag=False)
 
-    catalog = _catalog_by_slug()
-    selected = tuple(catalog[match.symptom_id] for match in ordered)
-    keph_min, red_flag = rules_from_symptoms(selected)
+    keph_min, red_flag = rules_from_symptoms(ordered)
     return MapResult(matches=ordered, keph_min=keph_min, red_flag=red_flag)

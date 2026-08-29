@@ -5,13 +5,16 @@ Mount is a P1 handshake. Decrement is P4. Notify is P5.
 
 from __future__ import annotations
 
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, StringConstraints
 from sqlalchemy.orm import Session
 
 from app.auth.deps import CurrentUser, get_current_user
 from app.bookings.create import (
     NOTIFY_LOCALES,
+    FacilityBelowKeph,
     FacilityUnavailable,
     UnknownSymptoms,
     create_instant_booking,
@@ -21,10 +24,20 @@ from app.core.errors import ErrorEnvelope
 
 router = APIRouter(tags=["bookings"])
 
+SymptomId = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True,
+        min_length=1,
+        max_length=100,
+        pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$",
+    ),
+]
+
 
 class CreateBookingRequest(BaseModel):
     facility_id: int = Field(ge=1)
-    symptom_ids: list[str] = Field(min_length=1)
+    symptom_ids: list[SymptomId] = Field(min_length=1, max_length=20)
     notify_locale: str | None = None
     patient_free_text: str | None = Field(default=None, max_length=2000)
 
@@ -72,6 +85,7 @@ def _forbidden() -> HTTPException:
         401: {"model": ErrorEnvelope},
         403: {"model": ErrorEnvelope},
         404: {"model": ErrorEnvelope},
+        409: {"model": ErrorEnvelope},
         422: {"model": ErrorEnvelope},
     },
 )
@@ -104,6 +118,11 @@ def create_booking(
         raise HTTPException(
             status_code=404,
             detail={"code": "facility_not_found", "message": str(exc)},
+        ) from exc
+    except FacilityBelowKeph as exc:
+        raise HTTPException(
+            status_code=409,
+            detail={"code": "facility_below_keph_min", "message": str(exc)},
         ) from exc
     except UnknownSymptoms as exc:
         raise HTTPException(

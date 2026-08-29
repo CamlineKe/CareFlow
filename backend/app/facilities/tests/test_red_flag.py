@@ -7,7 +7,7 @@ _KANG = "SEED-NBO-KANG"
 _AT_BUSY = {"lat": -1.2942, "lng": 36.8222, "keph_min": 4}
 
 
-def test_red_flag_ranks_nearest_not_quietest(client, db_reset):
+def test_red_flag_ranks_nearest_not_quietest(client):
     routine = client.get("/facilities/recommend", params=_AT_BUSY)
     flagged = client.get(
         "/facilities/recommend",
@@ -25,7 +25,7 @@ def test_red_flag_ranks_nearest_not_quietest(client, db_reset):
     assert flagged_codes.index(_BUSY) < flagged_codes.index(_QUIET)
 
 
-def test_red_flag_excludes_keph_below_four(client, db_reset):
+def test_red_flag_excludes_keph_below_four(client):
     response = client.get(
         "/facilities/recommend",
         params={"lat": -1.2655, "lng": 36.7448, "red_flag": True},
