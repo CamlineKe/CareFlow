@@ -1,46 +1,96 @@
-"""Pytest fixtures for notify service tests."""
+"""Pytest fixtures for notify service tests.
+
+Cleanup and fixture inserts use the local owner (BYPASSRLS). Bookings and
+notify_jobs have FORCE RLS and no DELETE policy, so the app role cannot
+wipe leftover rows from earlier packages.
+"""
 
 from __future__ import annotations
 
+import os
 import sys
+from collections.abc import Callable, Iterator
+from contextlib import AbstractContextManager, contextmanager
 from pathlib import Path
 
 import pytest
-from sqlalchemy import text
+from sqlalchemy import create_engine, text
+from sqlalchemy.engine import make_url
+from sqlalchemy.orm import Session, sessionmaker
 
 _BACKEND_ROOT = Path(__file__).resolve().parents[3]
 if str(_BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(_BACKEND_ROOT))
 
 from app.auth.seed import ensure_demo_users  # noqa: E402
-from app.core.db import SessionLocal  # noqa: E402
+from app.core.config import normalize_database_url  # noqa: E402
+
+_LOCAL_OWNER = "postgresql://careflow_owner:careflow_owner@localhost:5432/careflow"
+_LOCAL_HOSTS = frozenset({"localhost", "127.0.0.1", "::1", "db"})
+_DELETE_ROWS = (
+    "DELETE FROM note_images",
+    "DELETE FROM notes",
+    "DELETE FROM notify_jobs",
+    "DELETE FROM booking_symptoms",
+    "DELETE FROM booking_instant",
+    "DELETE FROM booking_appointments",
+    "DELETE FROM booking_facility_snapshots",
+    "DELETE FROM bookings",
+    "DELETE FROM symptom_synonyms",
+    "DELETE FROM symptoms",
+    "DELETE FROM patient_profiles",
+    "DELETE FROM user_preferred_facilities",
+    "DELETE FROM users",
+    "DELETE FROM facilities",
+)
 
 
-@pytest.fixture
-def db_reset() -> None:
-    session = SessionLocal()
+def _guarded_owner_url() -> str:
+    raw = os.environ.get("DATABASE_ADMIN_URL") or _LOCAL_OWNER
+    url = normalize_database_url(raw)
+    parsed = make_url(url)
+    if (
+        parsed.host not in _LOCAL_HOSTS
+        or parsed.database != "careflow"
+        or parsed.username != "careflow_owner"
+    ):
+        raise RuntimeError(
+            "notify tests refuse owner-level cleanup outside the local CareFlow database"
+        )
+    return url
+
+
+@contextmanager
+def _owner_session() -> Iterator[Session]:
+    engine = create_engine(_guarded_owner_url(), pool_pre_ping=True)
+    factory = sessionmaker(bind=engine, expire_on_commit=False, class_=Session)
+    session = factory()
     try:
-        session.execute(text("DELETE FROM notify_jobs"))
-        session.execute(text("DELETE FROM booking_facility_snapshots"))
-        session.execute(text("DELETE FROM booking_symptoms"))
-        session.execute(text("DELETE FROM booking_instant"))
-        session.execute(text("DELETE FROM bookings"))
-        session.execute(text("DELETE FROM symptom_synonyms"))
-        session.execute(text("DELETE FROM symptoms"))
-        session.execute(text("DELETE FROM users"))
-        session.execute(text("DELETE FROM facilities"))
+        yield session
         session.commit()
     except Exception:
         session.rollback()
         raise
     finally:
         session.close()
+        engine.dispose()
+
+
+@pytest.fixture
+def owner_session_factory() -> Callable[[], AbstractContextManager[Session]]:
+    return _owner_session
+
+
+@pytest.fixture
+def db_reset() -> None:
+    with _owner_session() as session:
+        for statement in _DELETE_ROWS:
+            session.execute(text(statement))
 
 
 @pytest.fixture
 def sample_booking_id(db_reset: None) -> int:
-    session = SessionLocal()
-    try:
+    with _owner_session() as session:
         ensure_demo_users(session)
         session.execute(
             text(
@@ -115,10 +165,4 @@ def sample_booking_id(db_reset: None) -> int:
                 "wait_count": facility["wait_count"],
             },
         )
-        session.commit()
         return int(booking_id)
-    except Exception:
-        session.rollback()
-        raise
-    finally:
-        session.close()
