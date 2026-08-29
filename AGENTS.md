@@ -18,6 +18,7 @@ Cross-tool baseline for humans and coding agents (Cursor, Claude Code, etc.).
 | `plans/` | Committed product/implementation specs |
 | `research/` | Market & platform research (`big-picture/` + `ops/`) — see [research/README.md](research/README.md) and [research/AGENTS.md](research/AGENTS.md) |
 | `scripts/` | Root operational scripts (PDF pipeline) |
+| `mosescodes/` | P2 working notes (Moses) — [mosescodes/README.md](mosescodes/README.md); not application code |
 
 ## Directory documentation
 
@@ -54,7 +55,7 @@ Optional skills.sh guide: `docs/portable-skills.md` (installed when the `portabl
 | Surface | Use |
 |---------|-----|
 | **Firebase Auth** | Project `careflow-kenya`. Local Admin SDK + localhost walkthrough: [ONBOARDING.md](ONBOARDING.md#firebase-localhost). Agents must prompt via Phantom on first run / `GET /me` failures (`.cursor/rules/firebase-localhost.mdc`) — never collect keys in chat. |
-| **Render** Cursor plugin MCP | Deploys, logs, Postgres, env vars. Install with `/add-plugin render` (user scope). Do **not** add a second `render` entry in `mcp.json`. |
+| **Render** user-scope hosted MCP (`user-render`) | Deploys, logs, Postgres, env vars. Connected at `https://mcp.render.com/mcp` with OAuth client id `cursor`. **Parent-only** (`list_workspaces`, deploys, logs). Do **not** add a second `render` entry to project `.cursor/mcp.json` or also `/add-plugin render` (duplicate). See `.cursor/rules/render-mcp.mdc`. |
 | **ElevenLabs** hosted MCP + skills | Voice agents, TTS, STT (`text-to-speech`, `speech-to-text`, `agents`, `setup-api-key`). Hosted MCP is `https://api.elevenlabs.io/v1/mcp` (OAuth). Product runtime still cascades **ElevenLabs then Pawa** per [plans/kenya-pretriage.md](plans/kenya-pretriage.md). |
 
 ## Conventions

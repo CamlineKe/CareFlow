@@ -165,7 +165,7 @@ API --> PG : status arrived; wait_count--
 @enduml
 
 @startuml deploy
-title Deploy — local Compose vs Render
+title Deploy — local Compose vs Render staging
 
 node "Developer machine" {
   component "next dev :3000\n(host, not Compose)" as NextHost
@@ -178,17 +178,23 @@ node "Developer machine" {
 NextHost --> ApiLocal : FRONTEND_ORIGIN\nhttp://localhost:3000
 ApiLocal --> DbLocal : DATABASE_URL (careflow)\nDATABASE_ADMIN_URL (owner)
 
-cloud "Render (render.yaml not applied)" {
+cloud "Render staging (Blueprint not applied)" {
+  component "careflow-web\nNode PWA" as WebR
   component "careflow-api\nDocker Web Service" as ApiR
   database "careflow-db\nPostgres 16" as DbR
-  component "Next.js PWA\nHTTPS (planned)" as NextR
 }
 
-NextR ..> ApiR : second Web Service\nplanned Wave 3
-ApiR --> DbR
+WebR --> ApiR : NEXT_PUBLIC_API_URL\nfrom careflow-api RENDER_EXTERNAL_URL\n(build-time; first web deploy may rebuild)
+ApiR --> WebR : FRONTEND_ORIGIN\nfrom careflow-web RENDER_EXTERNAL_URL
+ApiR --> DbR : DATABASE_URL + DATABASE_ADMIN_URL\nboth from careflow-db connectionString\n(staging shortcut)
 
-note bottom of NextHost
+note bottom of WebR
+  Not production. Not applied until dashboard Blueprint apply.
+  No live hostnames yet (Render assigns after apply).
   DEMO_NOTIFY=1 never live-dials.
-  Phantom injects secrets locally; Render dashboard env in production.
+  Dual-URL staging shortcut: same DB owner string
+  for DATABASE_URL and DATABASE_ADMIN_URL;
+  dual careflow / careflow_owner + RLS is a follow-up.
+  Phantom locally; dashboard sync:false after apply.
 end note
 @enduml
