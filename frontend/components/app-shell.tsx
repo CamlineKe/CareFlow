@@ -26,10 +26,8 @@ export function BackToRolePicker({
   label?: string;
 } = {}) {
   return (
-    <p className="mb-6">
-      <Link href="/" className={ui.textLink}>
-        {label}
-      </Link>
-    </p>
+    <Link href="/" className={ui.textLink}>
+      {label}
+    </Link>
   );
 }

@@ -103,7 +103,7 @@ export function FacilityConfig() {
       ) : null}
 
       {busy === "load" && !queue ? (
-        <p className="px-5 py-10 text-sm text-[#8fa0af]">Loading config…</p>
+        <p className="px-5 py-10 text-sm text-cf-desk-muted">Loading config…</p>
       ) : null}
 
       {queue ? (
@@ -111,7 +111,7 @@ export function FacilityConfig() {
           <section>
             <SectionLabel>People waiting — ranking input</SectionLabel>
             <Card>
-              <p className="text-xs text-[#8fa0af]">{queue.facility.kmhfr_code}</p>
+              <p className="text-xs text-cf-desk-muted">{queue.facility.kmhfr_code}</p>
               <p className="mt-1 text-3xl font-semibold tabular-nums">
                 {queue.facility.wait_count}
               </p>
@@ -151,7 +151,7 @@ export function FacilityConfig() {
                 <Card key={dept.id} className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium">{dept.name}</p>
-                    <p className="text-xs text-[#8fa0af]">
+                    <p className="text-xs text-cf-desk-muted">
                       {dept.stations.map((station) => station.name).join(" · ")}
                     </p>
                   </div>
@@ -165,7 +165,7 @@ export function FacilityConfig() {
                 </Card>
               ))}
             </div>
-            <p className="mt-3 text-xs text-[#8fa0af]">
+            <p className="mt-3 text-xs text-cf-desk-muted">
               Emergency and triage call red-flag tickets first, then by arrival.
               Other desks call by arrival. Staff assign unassigned tickets on
               Station. Department is not chosen by the care-seeker.

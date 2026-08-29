@@ -167,7 +167,9 @@ export function HospitalNotesContent() {
 
   return (
     <AppShell width="desk">
-      <BackToRolePicker />
+      <div className="mb-6">
+        <BackToRolePicker />
+      </div>
 
       <header>
         <h1 className="text-2xl font-semibold tracking-tight">

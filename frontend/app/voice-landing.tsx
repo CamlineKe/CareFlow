@@ -211,12 +211,13 @@ export function VoiceLanding() {
   return (
     <AppShell width="phone">
       <div className="flex flex-col gap-6">
-        <LocaleToggle />
-
         <header>
-          <p className="text-sm font-medium tracking-wide text-cf-teal">
-            {t("kenyaLabel", locale)}
-          </p>
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-sm font-medium tracking-wide text-cf-teal">
+              {t("kenyaLabel", locale)}
+            </p>
+            <LocaleToggle />
+          </div>
           <h1 className={`mt-1 ${ui.pageTitle}`}>{t("greetingTitle", locale)}</h1>
           <p className={`mt-2 ${ui.subtitle}`}>{t("greetingSubtitle", locale)}</p>
           <p id="pretriage-disclaimer" className={`mt-3 ${ui.subtitle}`}>
